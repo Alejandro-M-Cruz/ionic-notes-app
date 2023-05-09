@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Auth, authState} from "@angular/fire/auth";
-import {User} from "../model/user.model";
+import {Auth, authState, updateProfile} from "@angular/fire/auth";
+import {User} from "../../model/user.model";
 import {map, Observable} from "rxjs";
 
 @Injectable({
@@ -26,5 +26,12 @@ export class UserService {
 
   get currentUser$(): Observable<User | null> {
     return authState(this.auth).pipe(map(firebaseUser => this.firebaseUserToUser(firebaseUser)))
+  }
+
+  async updateProfile(username: string, photoUrl: string) {
+    await updateProfile(this.auth.currentUser!, {
+      displayName: username,
+      photoURL: photoUrl
+    })
   }
 }

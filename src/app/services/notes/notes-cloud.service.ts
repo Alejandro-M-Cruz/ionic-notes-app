@@ -7,17 +7,18 @@ import {
   doc,
   Firestore,
   orderBy,
-  query, setDoc,
+  query, setDoc, updateDoc,
   where
 } from "@angular/fire/firestore";
 import {BehaviorSubject, map, Observable} from "rxjs";
-import {Note} from "../model/note.model";
-import {UserService} from "./user.service";
+import {Note} from "../../model/note.model";
+import {UserService} from "../user/user.service";
+import {serverTimestamp} from "@angular/fire/database";
 
 @Injectable({
   providedIn: 'root'
 })
-export class NotesService {
+export class NotesCloudService {
   private notesCollection = collection(this.firestore, 'notes')
   private notes$ = new BehaviorSubject<Note[]>([])
 
@@ -47,7 +48,13 @@ export class NotesService {
   }
 
   async addNote(note: Note) {
-    await addDoc(this.notesCollection, note)
+    await addDoc(this.notesCollection, {
+      title: note.title,
+      content: note.content,
+      isFavourite: note.isFavourite,
+      creationTimestamp: note.creationTimestamp ?? serverTimestamp(),
+      userId: this.userService.currentUser!.uid
+    })
   }
 
   async deleteNote(noteId: string) {
@@ -57,4 +64,9 @@ export class NotesService {
   async updateNote(noteId: string, note: Note) {
     await setDoc(doc(this.notesCollection, noteId), note)
   }
+
+  async setIfNoteIsFavourite(noteId: string, isFavourite: boolean) {
+    await updateDoc(doc(this.notesCollection, noteId), {isFavourite})
+  }
+
 }
