@@ -34,7 +34,7 @@ export class NotesCloudService {
     const q = query(
       this.notesCollection,
       where('userId', '==', this.userService.currentUser!),
-      orderBy('creationTimestamp')
+      orderBy('lastUpdateTimestamp')
     )
     return collectionData(q, {idField: 'id'}) as Observable<Note[]>
   }
@@ -52,7 +52,7 @@ export class NotesCloudService {
       title: note.title,
       content: note.content,
       isFavourite: note.isFavourite,
-      creationTimestamp: note.creationTimestamp ?? serverTimestamp(),
+      lastUpdateTimestamp: note.lastUpdateTimestamp ?? serverTimestamp(),
       userId: this.userService.currentUser!.uid
     })
   }

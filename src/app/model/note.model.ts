@@ -7,5 +7,6 @@ export class Note {
   content?: string
   isFavourite!: boolean
   creationTimestamp!: Date
+  lastUpdateTimestamp!: Date
   userId?: string
 }
