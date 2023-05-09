@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "notes-app-8c485": {
+      "hosting": {
+        "app": [
+          "notes-app-8c485"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "notes-app-8c485"
+  }
+}
