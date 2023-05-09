@@ -22,10 +22,10 @@ export class NotesService {
   private notes$ = new BehaviorSubject<Note[]>([])
 
   constructor(private firestore: Firestore, private userService: UserService) {
-    this.loadUserNotes$()
+    this.loadUserNotes()
   }
 
-  private loadUserNotes$() {
+  private loadUserNotes() {
     this.getUserNotesFromFirebase().subscribe(this.notes$)
   }
 
