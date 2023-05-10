@@ -6,6 +6,7 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
+import {NotesGridComponent} from "./notes-grid/notes-grid.component";
 
 
 @NgModule({
@@ -16,6 +17,6 @@ import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
     HomePageRoutingModule,
     ToolbarComponent
   ],
-  declarations: [HomePage]
+  declarations: [HomePage, NotesGridComponent]
 })
 export class HomePageModule {}

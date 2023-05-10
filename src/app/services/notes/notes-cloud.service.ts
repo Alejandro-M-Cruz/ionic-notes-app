@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   addDoc,
   collection,
@@ -7,11 +7,13 @@ import {
   doc,
   Firestore,
   orderBy,
-  query, setDoc, updateDoc,
+  query,
+  setDoc,
+  updateDoc,
   where
 } from "@angular/fire/firestore";
-import {BehaviorSubject, map, Observable} from "rxjs";
-import {Note} from "../../model/note.model";
+import {Observable} from "rxjs";
+import {Note, NoteDisplayOptions} from "../../model/note.model";
 import {UserService} from "../user/user.service";
 import {serverTimestamp} from "@angular/fire/database";
 
@@ -20,31 +22,19 @@ import {serverTimestamp} from "@angular/fire/database";
 })
 export class NotesCloudService {
   private notesCollection = collection(this.firestore, 'notes')
-  private notes$ = new BehaviorSubject<Note[]>([])
 
-  constructor(private firestore: Firestore, private userService: UserService) {
-    this.loadUserNotes()
-  }
+  constructor(private firestore: Firestore, private userService: UserService) {}
 
-  private loadUserNotes() {
-    this.getUserNotesFromFirebase().subscribe(this.notes$)
-  }
-
-  private getUserNotesFromFirebase(): Observable<Note[]> {
+  getUserNotes$(option: NoteDisplayOptions): Observable<Note[]> {
     const q = query(
       this.notesCollection,
       where('userId', '==', this.userService.currentUser!),
-      orderBy('lastUpdateTimestamp')
+      orderBy('lastUpdateTimestamp'),
+      option === NoteDisplayOptions.FAVOURITES ?
+        where('isFavourite', '==', true) :
+        orderBy('isFavourite', 'desc')
     )
     return collectionData(q, {idField: 'id'}) as Observable<Note[]>
-  }
-
-  get userNotes$(): Observable<Note[]> {
-    return this.notes$
-  }
-
-  get userFavouriteNotes$(): Observable<Note[]> {
-    return this.notes$.pipe(map(notes => notes.filter(note => note.isFavourite)))
   }
 
   async addNote(note: Note) {
