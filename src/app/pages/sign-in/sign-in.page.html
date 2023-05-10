@@ -1,13 +1,20 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>sign-in</ion-title>
-  </ion-toolbar>
+  <app-toolbar title="Sign in"></app-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">sign-in</ion-title>
-    </ion-toolbar>
+    <app-toolbar title="Sign in"></app-toolbar>
   </ion-header>
+
+  <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+    <app-email-input [control]="signInForm.controls.email"></app-email-input>
+    <app-password-input [control]="signInForm.controls.password"></app-password-input>
+    <p>If you have not created an account yet, <a routerLink="/sign-up">SIGN UP HERE</a></p>
+    <ion-buttons>
+      <ion-button (click)="navigateToHome()">Cancel</ion-button>
+      <ion-button type="submit" [disabled]="signInForm.invalid">Sign in</ion-button>
+    </ion-buttons>
+  </form>
+
 </ion-content>
