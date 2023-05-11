@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {ProfilePhotoService} from "../../../services/user/profile-photo.service";
 import {IonicModule, ViewWillLeave} from "@ionic/angular";
@@ -14,7 +14,7 @@ import {NgIf} from "@angular/common";
   ],
   standalone: true
 })
-export class ProfilePhotoInputComponent implements OnInit, ViewWillLeave {
+export class ProfilePhotoInputComponent implements OnInit, OnDestroy {
   @Input() control!: FormControl
   profilePhotoFile: File | null = null
   notYetUploadedProfilePhotoUrl: string | null = null
@@ -23,7 +23,7 @@ export class ProfilePhotoInputComponent implements OnInit, ViewWillLeave {
 
   ngOnInit() {}
 
-  ionViewWillLeave() {
+  ngOnDestroy() {
     if (this.notYetUploadedProfilePhotoUrl)
       this.profilePhotoService.revokeNotYetUploadedProfilePhotoURl(this.notYetUploadedProfilePhotoUrl)
   }

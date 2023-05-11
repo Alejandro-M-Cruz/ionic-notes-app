@@ -14,7 +14,6 @@ import {RouterModule} from "@angular/router";
 })
 export class ToolbarComponent  implements OnInit {
   @Input() title: string = ""
-  @Input() showBackButton: boolean = true
 
   constructor() { }
 

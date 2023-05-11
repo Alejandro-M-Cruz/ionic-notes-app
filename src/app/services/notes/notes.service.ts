@@ -1,71 +1,87 @@
-import { Injectable } from '@angular/core';
-import {NotesCloudService} from "./notes-cloud.service";
-import {take} from "rxjs";
-import {UserService} from "../user/user.service";
+import {Injectable} from '@angular/core';
+import {
+  addDoc,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  Firestore, orderBy,
+  query,
+  setDoc,
+  where
+} from "@angular/fire/firestore";
+import {BehaviorSubject, map, Observable, Subscription, tap} from "rxjs";
 import {Note} from "../../model/note.model";
-import {NotesLocalService} from "./notes-local.service";
-import {Platform} from "@ionic/angular";
+import {UserService} from "../user/user.service";
+import {serverTimestamp} from "@angular/fire/database";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
-  constructor(
-    private userService: UserService,
-    private notesCloudService: NotesCloudService,
-    private notesLocalService: NotesLocalService,
-    private platform: Platform
-  ) { }
+  private notesCollection = collection(this.firestore, 'notes')
+  userNotes$ = new BehaviorSubject([] as Note[])
+  userNotesSubscription?: Subscription
 
-  private isMobile() {
-    return this.platform.is('mobile') ||
-      this.platform.is('android') ||
-      this.platform.is('ios')
+  constructor(
+    private firestore: Firestore,
+    private userService: UserService
+  ) {
+    this.loadUserNotes()
   }
 
-  /*loadNotesFromCloud() {
-    this.notesCloudService.userNotes$.pipe(take(1)).subscribe(async notes => {
-      const addedNotes: Note[] = []
-      const updatedNotes: Note[] = []
-      const deletedNotesLocalIds: number[] = []
-      for (const note of notes) {
-        if (this.noteHasBeenAddedToCloud(note)) {
-          addedNotes.push(note)
-        } else if (await this.noteHasBeenUpdatedInCloud(note)) {
-          updatedNotes.push(note)
-        } else if (this.noteHasBeenDeletedFromCloud(note)) {
-          if (note.localId) deletedNotesLocalIds.push(note.localId)
-        }
-      }
-      await this.updateLocalDatabase(addedNotes, updatedNotes, deletedNotesLocalIds)
+  private loadUserNotes() {
+    this.userNotesSubscription = this.loadUserNotesFromFirestore$().subscribe(userNotes => {
+      this.userNotes$.next(userNotes)
     })
   }
 
-  private noteHasBeenAddedToCloud(note: Note): boolean {
-    return !note.localId
+  private firestoreDocDataToNote = (docData: any): Note => {
+    return {
+      ...docData,
+      creationTimestamp: docData.creationTimestamp.toDate(),
+      lastUpdateTimestamp: docData.lastUpdateTimestamp.toDate(),
+    }
   }
 
-  private async noteHasBeenUpdatedInCloud(note: Note): Promise<boolean> {
-    const localNote = await this.notesLocalService.getNoteByLocalId(note.localId!)
-    return localNote!.lastUpdateTimestamp < note.lastUpdateTimestamp
+  private loadUserNotesFromFirestore$(): Observable<Note[]> {
+    const q = query(
+      this.notesCollection,
+      where('userId', '==', this.userService.currentUser!.uid),
+      orderBy('lastUpdateTimestamp', 'desc')
+    )
+    return collectionData(q, {idField: 'id'}).pipe(
+      map(userNotes => userNotes.map(this.firestoreDocDataToNote))
+    ) as Observable<Note[]>
   }
 
-  private async noteHasBeenDeletedFromCloud(note: Note): boolean {
-    const localNotes = await this.notesLocalService.getNotes()
-
+  getUserNotes$(): Observable<Note[]> {
+    return this.userNotes$.pipe(tap(notes => console.log(notes)))
   }
 
-  private async updateLocalDatabase(
-    addedNotes: Note[],
-    updatedNotes: Note[],
-    deletedNotesLocalIds: number[]
-  ) {
-    await this.notesLocalService.addNotes(addedNotes)
-    await this.notesLocalService.updateNotes(updatedNotes)
-    await this.notesLocalService.deleteNotes(deletedNotesLocalIds)
+  async addNote(note: Note) {
+    const now = serverTimestamp()
+    await addDoc(this.notesCollection, {
+      title: note.title,
+      content: note.content,
+      creationTimestamp: now,
+      lastUpdateTimestamp: now,
+      userId: this.userService.currentUser!.uid
+    })
   }
 
-  storeNotesToCloud() {
+  async deleteNote(noteId: string) {
+    await deleteDoc(doc(this.notesCollection, noteId))
+  }
 
-  }*/
+  async updateNote(noteId: string, note: Note) {
+    await setDoc(doc(this.notesCollection, noteId), {
+      ...note,
+      lastUpdateTimestamp: serverTimestamp()
+    })
+  }
+
+  destroySubscriptions(): void {
+    this.userNotesSubscription?.unsubscribe()
+  }
 }

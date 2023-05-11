@@ -1,16 +1,12 @@
-<ion-toolbar>
-  <ion-segment [ngModel]="defaultNoteDisplayOption" (ngModelChange)="onNoteDisplayOptionChanged($event)">
-    <ion-segment-button value="all">All</ion-segment-button>
-    <ion-segment-button value="favourites">Favourites</ion-segment-button>
-  </ion-segment>
-</ion-toolbar>
 <ion-grid>
-  <ion-col size="12" size-sm="6" size-md="4" size-lg="3" size-xl="2" *ngFor="let note of notes$ | async">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-subtitle>{{note.lastUpdateTimestamp | date}}</ion-card-subtitle>
-        <ion-card-title>{{note.title}}</ion-card-title>
-      </ion-card-header>
-    </ion-card>
-  </ion-col>
+  <ion-row>
+    <ion-col size="12" size-sm="6" size-md="4" size-lg="3" size-xl="2" *ngFor="let note of notes">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>{{note.lastUpdateTimestamp | date}}</ion-card-subtitle>
+          <ion-card-title>{{note.title}}</ion-card-title>
+        </ion-card-header>
+      </ion-card>
+    </ion-col>
+  </ion-row>
 </ion-grid>
