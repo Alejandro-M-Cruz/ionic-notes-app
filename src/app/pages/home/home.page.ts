@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import {UserService} from "../../services/user/user.service";
-import {PlatformService} from "../../services/platform/platform.service";
 
 @Component({
   selector: 'app-home',
@@ -9,8 +8,7 @@ import {PlatformService} from "../../services/platform/platform.service";
 })
 export class HomePage {
   currentUser$ = this.userService.currentUser$
-  canUseFavourites = this.platformService.canUseFavourites()
 
-  constructor(private userService: UserService, private platformService: PlatformService) {}
+  constructor(private userService: UserService) {}
 
 }

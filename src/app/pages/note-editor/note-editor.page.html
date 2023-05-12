@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <app-toolbar title="Note editor"></app-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <app-toolbar title="Note editor"></app-toolbar>
+  </ion-header>
+
+  <form [formGroup]="noteForm">
+    <ion-textarea
+      class="title-textarea"
+      label="Title"
+      placeholder="Type the note title here..."
+      formControlName="title"
+    ></ion-textarea>
+    <ion-textarea
+      class="content-textarea"
+      label="Content"
+      placeholder="Type the content of the note here..."
+      formControlName="content"
+    ></ion-textarea>
+    <ion-button color="danger" (click)="onCancelButtonClicked()">Cancel</ion-button>
+    <ion-button (click)="onConfirmButtonClicked()">Confirm</ion-button>
+  </form>
+
+</ion-content>

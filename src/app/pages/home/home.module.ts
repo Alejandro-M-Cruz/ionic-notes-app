@@ -7,10 +7,10 @@ import { HomePage } from './home.page';
 import { HomePageRoutingModule } from './home-routing.module';
 import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
 import {NotesGridComponent} from "./notes-grid/notes-grid.component";
+import {NoteComponent} from "./notes-grid/note/note.component";
 import {
-  NotesWithFavouritesComponent
-} from "./notes-with-favourites/notes-with-favourites.component";
-import {NotesWithoutFavouritesComponent} from "./notes-without-favourites/notes-without-favourites.component";
+  DeleteConfirmationComponent
+} from "./notes-grid/delete-confirmation/delete-confirmation.component";
 
 
 @NgModule({
@@ -21,6 +21,6 @@ import {NotesWithoutFavouritesComponent} from "./notes-without-favourites/notes-
     HomePageRoutingModule,
     ToolbarComponent
   ],
-  declarations: [HomePage, NotesGridComponent, NotesWithFavouritesComponent, NotesWithoutFavouritesComponent]
+  declarations: [HomePage, NotesGridComponent, NoteComponent, DeleteConfirmationComponent]
 })
 export class HomePageModule {}

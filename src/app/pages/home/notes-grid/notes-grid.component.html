@@ -1,12 +1,33 @@
+<ion-toolbar>
+  <ion-segment [value]="showFavouritesOnly">
+    <ion-segment-button [value]="false" (click)="onShowFavouritesOnlyChanged(false)">
+      All
+    </ion-segment-button>
+    <ion-segment-button [value]="true" (click)="onShowFavouritesOnlyChanged(true)">
+      Favourites
+    </ion-segment-button>
+  </ion-segment>
+</ion-toolbar>
+
 <ion-grid>
   <ion-row>
-    <ion-col size="12" size-sm="6" size-md="4" size-lg="3" size-xl="2" *ngFor="let note of notes">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-subtitle>{{note.lastUpdateTimestamp | date}}</ion-card-subtitle>
-          <ion-card-title>{{note.title}}</ion-card-title>
-        </ion-card-header>
-      </ion-card>
+    <ion-col size="12" size-sm="6" size-lg="4" size-xl="3" *ngFor="let note of userNotes$ | async">
+      <app-note [note]="note"></app-note>
     </ion-col>
   </ion-row>
 </ion-grid>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button id="open-delete-all-confirmation" color="danger" [disabled]="!(userNotes$ | async)?.length">
+    <ion-icon name="trash"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-button (click)="onAddNoteButtonClicked()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+<app-delete-confirmation
+  title="Are you sure you want to delete all your notes?"
+  triggerButtonId="open-delete-all-confirmation"
+  (confirmationClosed)="onDeleteAllNotesConfirmationClosed($event)"
+></app-delete-confirmation>
+

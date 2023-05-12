@@ -6,13 +6,12 @@ import {
   signOut,
   updateProfile
 } from "@angular/fire/auth";
-import {SubscriptionsService} from "../subscriptions.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  constructor(private auth: Auth, private subscriptionsService: SubscriptionsService) { }
+  constructor(private auth: Auth) { }
 
   async signIn(email: string, password: string) {
     try {
@@ -26,7 +25,6 @@ export class AuthenticationService {
   async signOut() {
     try {
       await signOut(this.auth)
-      this.subscriptionsService.destroySubscriptions()
     } catch (e: any) {
       console.error(e)
       throw e

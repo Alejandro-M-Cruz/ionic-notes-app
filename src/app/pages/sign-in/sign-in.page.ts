@@ -10,7 +10,7 @@ import {AuthenticationService} from "../../services/user/authentication.service"
   styleUrls: ['./sign-in.page.scss'],
 })
 export class SignInPage implements OnInit {
-  signInForm = this.fb.nonNullable.group({
+  signInForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.email, Validators.required]],
     password: ['', [
       Validators.minLength(User.MIN_PASSWORD_LENGTH),
@@ -19,9 +19,8 @@ export class SignInPage implements OnInit {
     ]]
   })
 
-
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private router: Router,
     private authenticationService: AuthenticationService
   ) { }

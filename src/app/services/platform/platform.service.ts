@@ -8,7 +8,6 @@ export class PlatformService {
   constructor() { }
 
   canUseFavourites(): boolean {
-    console.log('is native: ', Capacitor.isNativePlatform())
     return Capacitor.isNativePlatform()
   }
 }

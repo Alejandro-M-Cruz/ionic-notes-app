@@ -32,14 +32,19 @@ const routes: Routes = [
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule),
   },
   {
+    path: 'note-editor',
+    loadChildren: () => import('./pages/note-editor/note-editor.module').then( m => m.NoteEditorPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'home'
-  }
+  },
+
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules})
   ],
   exports: [RouterModule]
 })

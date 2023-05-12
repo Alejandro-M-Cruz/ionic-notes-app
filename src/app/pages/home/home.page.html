@@ -8,11 +8,7 @@
   </ion-header>
 
   <ng-container *ngIf="currentUser$ | async; else unauthenticated">
-    <app-notes-with-favourites *ngIf="canUseFavourites; else noFavourites">
-    </app-notes-with-favourites>
-    <ng-template #noFavourites>
-      <app-notes-without-favourites></app-notes-without-favourites>
-    </ng-template>
+    <app-notes-grid></app-notes-grid>
   </ng-container>
 
   <ng-template #unauthenticated>

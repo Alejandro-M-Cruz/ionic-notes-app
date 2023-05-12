@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { NotesWithoutFavouritesComponent } from './notes-without-favourites.component';
+import { NoteComponent } from './note.component';
 
-describe('NotesWithoutFavouritesComponent', () => {
-  let component: NotesWithoutFavouritesComponent;
-  let fixture: ComponentFixture<NotesWithoutFavouritesComponent>;
+describe('NoteComponent', () => {
+  let component: NoteComponent;
+  let fixture: ComponentFixture<NoteComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NotesWithoutFavouritesComponent ],
+      declarations: [ NoteComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NotesWithoutFavouritesComponent);
+    fixture = TestBed.createComponent(NoteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -16,7 +16,7 @@ export class SignUpPage implements OnInit {
     Validators.maxLength(User.MAX_PASSWORD_LENGTH),
     Validators.required
   ]
-  signUpForm = this.fb.nonNullable.group({
+  signUpForm = this.formBuilder.nonNullable.group({
     username: ['', [
       Validators.minLength(User.MIN_USERNAME_LENGTH),
       Validators.maxLength(User.MAX_USERNAME_LENGTH),
@@ -30,7 +30,7 @@ export class SignUpPage implements OnInit {
   profilePhotoUrl?: string
 
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private router: Router,
     private profilePhotoService: ProfilePhotoService

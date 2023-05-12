@@ -1,8 +1,5 @@
 import {Injectable} from '@angular/core';
 import {SQLite, SQLiteObject} from "@awesome-cordova-plugins/sqlite/ngx";
-import {NotesService} from "./notes.service";
-import {from, map, Observable, zip} from "rxjs";
-import {Note} from "../../model/note.model";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +7,7 @@ import {Note} from "../../model/note.model";
 export class FavouritesService {
   db?: SQLiteObject
 
-  constructor(private notesService: NotesService, private sqlite: SQLite) {
+  constructor(private sqlite: SQLite) {
     this.initialiseDatabase()
   }
 
@@ -24,19 +21,10 @@ export class FavouritesService {
     await this.db!.executeSql('DELETE FROM favourites WHERE note_id = ?;', [noteId])
   }
 
-  private async getFavouriteNotesIds(): Promise<string[]> {
+  async getFavouriteNotesIds(): Promise<string[]> {
     await this.initialiseDatabase()
     return this.db!.executeSql('SELECT * FROM favourites;')
       .then(data => data.map((favourite: any) => favourite.note_id) as string[])
-  }
-
-  getUserFavouriteNotes$(): Observable<Note[]> {
-    return zip(
-      this.notesService.getUserNotes$(),
-      from(this.getFavouriteNotesIds())
-    ).pipe(map(([userNotes, favouriteNotesIds]) => {
-      return userNotes.filter(note => favouriteNotesIds.includes(note.id!))
-    }))
   }
 
   private initialiseDatabase() {
@@ -52,4 +40,13 @@ export class FavouritesService {
         .catch((e: any) => console.error(e))
     })
   }
+
+  /*getUserFavouriteNotes$(): Observable<Note[]> {
+    return zip(
+      this.notesService.getUserNotes$(),
+      from(this.getFavouriteNotesIds())
+    ).pipe(map(([userNotes, favouriteNotesIds]) => {
+      return userNotes.filter(note => favouriteNotesIds.includes(note.id))
+    }))
+  }*/
 }
