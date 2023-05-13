@@ -1,15 +1,15 @@
 <input #profilePhotoInput hidden type="file" accept="image/*" (change)="onImageFileChanged($event)">
-<div>
-  <ion-label>Profile photo</ion-label>
-  <ion-button (click)="profilePhotoInput.click()" shape="round">
-    <ion-icon *ngIf="!profilePhotoFile" slot="icon-only" name="person-circle-outline"></ion-icon>
+<ion-button fill="clear" shape="round">
+  <ion-avatar (click)="profilePhotoInput.click()" slot="icon-only">
     <img
-      width="100px"
+      width="100"
+      height="100"
       alt="Selected profile photo"
-      *ngIf="profilePhotoFile"
-      [src]="notYetUploadedProfilePhotoUrl"
+      [src]="notYetUploadedProfilePhotoUrl ?? 'https://ionicframework.com/docs/img/demos/avatar.svg'"
     >
-  </ion-button>
-</div>
+  </ion-avatar>
+</ion-button>
+
+
 
 

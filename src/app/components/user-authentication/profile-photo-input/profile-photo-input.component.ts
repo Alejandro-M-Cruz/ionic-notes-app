@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {ProfilePhotoService} from "../../../services/user/profile-photo.service";
 import {IonicModule, ViewWillLeave} from "@ionic/angular";
-import {NgIf} from "@angular/common";
+import {NgIf, NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-profile-photo-input',
@@ -10,7 +10,8 @@ import {NgIf} from "@angular/common";
   styleUrls: ['./profile-photo-input.component.scss'],
   imports: [
     IonicModule,
-    NgIf
+    NgIf,
+    NgOptimizedImage
   ],
   standalone: true
 })

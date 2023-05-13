@@ -1,9 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
 import {User} from "../../model/user.model";
-import {Observable, Subscription} from "rxjs";
-import {AuthenticationService} from "../../services/user/authentication.service";
+import {Subscription} from "rxjs";
+import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
+import {AccountDeletionService} from "../../services/user/account-deletion.service";
+import {FormControl} from "@angular/forms";
+import {NotesService} from "../../services/notes/notes.service";
 
 @Component({
   selector: 'app-profile',
@@ -11,18 +14,27 @@ import {Router} from "@angular/router";
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit, OnDestroy {
-  user: User | null = null
+  user?: User
   userSubscription?: Subscription
+  profilePhotoFormControl = new FormControl<File | null>(null)
+  userNotesQuantity$ = this.notesService.getUserNotesQuantity$()
+  userFavouriteNotesQuantity$ = this.notesService.getUserNotesQuantity$(true)
+  profilePhotoChanged = false
 
   constructor(
     private userService: UserService,
-    private authenticationService: AuthenticationService,
+    private authService: AuthService,
+    private notesService: NotesService,
+    private accountDeletionService: AccountDeletionService,
     private router: Router
   ) { }
 
   ngOnInit() {
     this.userSubscription = this.userService.currentUser$.subscribe(user => {
-      this.user = user
+      this.user = user!
+    })
+    this.profilePhotoFormControl.valueChanges.subscribe(profilePhotoFile => {
+      this.profilePhotoChanged = true
     })
   }
 
@@ -32,11 +44,17 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   async onSignOutButtonClicked() {
     try{
-      await this.authenticationService.signOut()
+      await this.authService.signOut()
       await this.router.navigate(['/home'])
     } catch (e: any) {
       console.error(e)
       alert(e.message)
     }
   }
+
+  async onAccountDeletionConfirmationClosed(shouldDeleteAccount: boolean) {
+    if (shouldDeleteAccount)
+      await this.accountDeletionService.deleteUserAccount()
+  }
+
 }

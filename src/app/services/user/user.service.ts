@@ -15,8 +15,8 @@ export class UserService {
       email: firebaseUser.email,
       username: firebaseUser.displayName,
       photoUrl: firebaseUser.photoURL,
-      creationTime: new Date(firebaseUser.metadata.creationTime),
-      lastSignInTime: new Date(firebaseUser.metadata.lastSignInTime)
+      creationTimestamp: new Date(firebaseUser.metadata.creationTime),
+      lastSignInTimestamp: new Date(firebaseUser.metadata.lastSignInTime)
     } : null
   }
 
@@ -28,10 +28,7 @@ export class UserService {
     return authState(this.auth).pipe(map(firebaseUser => this.firebaseUserToUser(firebaseUser)))
   }
 
-  async updateProfile(username: string, photoUrl: string) {
-    await updateProfile(this.auth.currentUser!, {
-      displayName: username,
-      photoURL: photoUrl
-    })
+  async updateProfilePhotoUrl(photoUrl: string) {
+    await updateProfile(this.auth.currentUser!, { photoURL: photoUrl })
   }
 }

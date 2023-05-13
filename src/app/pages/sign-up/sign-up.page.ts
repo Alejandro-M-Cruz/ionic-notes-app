@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {User} from "../../model/user.model";
-import {AuthenticationService} from "../../services/user/authentication.service";
+import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 
@@ -27,11 +27,10 @@ export class SignUpPage implements OnInit {
     passwordConfirmation: ['', this.passwordValidators],
     profilePhoto: new FormControl<File | null>(null)
   })
-  profilePhotoUrl?: string
 
   constructor(
     private formBuilder: FormBuilder,
-    private authenticationService: AuthenticationService,
+    private authService: AuthService,
     private router: Router,
     private profilePhotoService: ProfilePhotoService
   ) { }
@@ -43,30 +42,29 @@ export class SignUpPage implements OnInit {
     await this.router.navigate(['/home'])
   }
 
-  private async uploadProfilePhotoAndGetUrl() {
-    const profilePhoto = this.signUpForm.controls.profilePhoto.value
-    this.profilePhotoUrl = profilePhoto ?
-      await this.profilePhotoService.uploadProfilePhoto(profilePhoto) :
-      undefined
-  }
-
   private async signUp() {
     const { email, password, username } = this.signUpForm.controls
-    await this.authenticationService.createUser(
+    await this.authService.createUser(
       email.value!,
       password.value!,
-      username.value!,
-      this.profilePhotoUrl
+      username.value!
     )
   }
 
   async onSubmit() {
     try {
-      await this.uploadProfilePhotoAndGetUrl()
       await this.signUp()
+      await this.uploadUserProfilePhoto()
       await this.navigateToHome()
     } catch (e: any) {
+      console.error(e)
       alert(e.message)
     }
+  }
+
+  private async uploadUserProfilePhoto() {
+    const { profilePhoto } = this.signUpForm.controls
+    if (profilePhoto.value)
+      await this.profilePhotoService.uploadUserProfilePhoto(profilePhoto.value)
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {User} from "../../model/user.model";
 import {Router} from "@angular/router";
-import {AuthenticationService} from "../../services/user/authentication.service";
+import {AuthService} from "../../services/user/auth.service";
 
 @Component({
   selector: 'app-sign-in',
@@ -22,7 +22,7 @@ export class SignInPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -34,7 +34,7 @@ export class SignInPage implements OnInit {
 
   private async signIn() {
     const { email, password } = this.signInForm.controls
-    await this.authenticationService.signIn(email.value!, password.value!)
+    await this.authService.signIn(email.value!, password.value!)
   }
 
   async onSubmit() {
@@ -42,6 +42,7 @@ export class SignInPage implements OnInit {
       await this.signIn()
       await this.navigateToHome()
     } catch (e: any) {
+      console.error(e)
       alert(e.message)
     }
   }

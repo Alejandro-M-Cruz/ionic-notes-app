@@ -1,7 +1,13 @@
-ion-fab {
-  margin: 0 5vw 5vh 0;
+div {
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+}
 
-  ion-fab-button {
-    margin: 32px 0;
-  }
+ion-grid {
+  margin-top: 50px;
+}
+
+ion-fab {
+  position: fixed;
 }

@@ -19,11 +19,13 @@ export class ProfilePhotoService {
   revokeNotYetUploadedProfilePhotoURl(notYetUploadedProfilePhotoUrl: string) {
     URL.revokeObjectURL(notYetUploadedProfilePhotoUrl)
   }
-  async uploadProfilePhoto(profilePhoto: File): Promise<string> {
+
+  async uploadUserProfilePhoto(profilePhoto: File) {
     const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}/${profilePhoto.name}`
     try {
       const uploadResult = await uploadBytes(ref(this.storage, path), profilePhoto)
-      return getDownloadURL(uploadResult.ref)
+      const profilePhotoUrl = await getDownloadURL(uploadResult.ref)
+      await this.userService.updateProfilePhotoUrl(profilePhotoUrl)
     } catch (e: any) {
       console.error(e)
       throw e

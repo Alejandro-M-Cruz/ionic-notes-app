@@ -7,6 +7,6 @@ export class User {
   email!: string
   username!: string
   photoUrl?: string | null
-  creationTime!: Date
-  lastSignInTime!: Date
+  creationTimestamp!: Date
+  lastSignInTimestamp!: Date
 }

@@ -3,14 +3,13 @@ import {
   Auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut,
-  updateProfile
+  signOut, updateProfile,
 } from "@angular/fire/auth";
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthenticationService {
+export class AuthService {
   constructor(private auth: Auth) { }
 
   async signIn(email: string, password: string) {
@@ -31,15 +30,17 @@ export class AuthenticationService {
     }
   }
 
-  async createUser(email: string, password: string, username: string, photoUrl?: string) {
+  async createUser(email: string, password: string, username: string) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password)
-      await updateProfile(userCredential.user, {
-        displayName: username, photoURL: photoUrl
-      })
+      await createUserWithEmailAndPassword(this.auth, email, password)
+      await this.setUserName(username)
     } catch (e: any) {
       console.error(e)
       throw e
     }
+  }
+
+  private async setUserName(username: string) {
+    await updateProfile(this.auth.currentUser!, { displayName: username })
   }
 }

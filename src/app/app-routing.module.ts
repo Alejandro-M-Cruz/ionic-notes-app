@@ -22,7 +22,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/sign-in/sign-in.module').then( m => m.SignInPageModule),
   },
   {
-    title: 'Sign un',
+    title: 'Sign up',
     path: 'sign-up',
     loadChildren: () => import('./pages/sign-up/sign-up.module').then( m => m.SignUpPageModule),
   },

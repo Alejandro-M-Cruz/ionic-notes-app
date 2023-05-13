@@ -8,9 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
 import {NotesGridComponent} from "./notes-grid/notes-grid.component";
 import {NoteComponent} from "./notes-grid/note/note.component";
-import {
-  DeleteConfirmationComponent
-} from "./notes-grid/delete-confirmation/delete-confirmation.component";
+import {DeleteConfirmationComponent} from "../../components/delete-confirmation/delete-confirmation.component";
 
 
 @NgModule({
@@ -19,8 +17,9 @@ import {
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    ToolbarComponent
+    ToolbarComponent,
+    DeleteConfirmationComponent
   ],
-  declarations: [HomePage, NotesGridComponent, NoteComponent, DeleteConfirmationComponent]
+  declarations: [HomePage, NotesGridComponent, NoteComponent]
 })
 export class HomePageModule {}
