@@ -25,10 +25,17 @@ export class UserService {
   }
 
   get currentUser$(): Observable<User | null> {
-    return authState(this.auth).pipe(map(firebaseUser => this.firebaseUserToUser(firebaseUser)))
+    return authState(this.auth)
+      .pipe(map(firebaseUser => this.firebaseUserToUser(firebaseUser)))
   }
 
   async updateProfilePhotoUrl(photoUrl: string) {
     await updateProfile(this.auth.currentUser!, { photoURL: photoUrl })
+    location.reload()
+  }
+
+  async removeUserProfilePhoto() {
+    await updateProfile(this.auth.currentUser!, { photoURL: '' })
+    location.reload()
   }
 }

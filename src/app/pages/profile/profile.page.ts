@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
 import {User} from "../../model/user.model";
-import {Subscription} from "rxjs";
+import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {AccountDeletionService} from "../../services/user/account-deletion.service";
-import {FormControl} from "@angular/forms";
 import {NotesService} from "../../services/notes/notes.service";
+import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 
 @Component({
   selector: 'app-profile',
@@ -14,28 +14,32 @@ import {NotesService} from "../../services/notes/notes.service";
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit, OnDestroy {
-  user?: User
-  userSubscription?: Subscription
-  profilePhotoFormControl = new FormControl<File | null>(null)
-  userNotesQuantity$ = this.notesService.getUserNotesQuantity$()
-  userFavouriteNotesQuantity$ = this.notesService.getUserNotesQuantity$(true)
-  profilePhotoChanged = false
+  user$ = new BehaviorSubject<User | null>(null)
+  private userSubscription?: Subscription
+  userNotesQuantity$?: Observable<number>
+  userFavouriteNotesQuantity$?: Observable<number>
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
     private notesService: NotesService,
     private accountDeletionService: AccountDeletionService,
+    private profilePhotoService: ProfilePhotoService,
     private router: Router
   ) { }
 
   ngOnInit() {
-    this.userSubscription = this.userService.currentUser$.subscribe(user => {
-      this.user = user!
-    })
-    this.profilePhotoFormControl.valueChanges.subscribe(profilePhotoFile => {
-      this.profilePhotoChanged = true
-    })
+    this.loadCurrentUser$()
+    this.loadNotesQuantity()
+  }
+
+  private loadCurrentUser$() {
+    this.userSubscription = this.userService.currentUser$.subscribe(this.user$)
+  }
+
+  private loadNotesQuantity() {
+    this.userNotesQuantity$ = this.notesService.getUserNotesQuantity$()
+    this.userFavouriteNotesQuantity$ = this.notesService.getUserNotesQuantity$(true)
   }
 
   ngOnDestroy() {
@@ -57,4 +61,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       await this.accountDeletionService.deleteUserAccount()
   }
 
+  async onRemoveProfilePhotoButtonClicked() {
+    await this.profilePhotoService.deleteUserProfilePhoto()
+  }
 }

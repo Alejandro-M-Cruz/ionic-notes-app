@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import {
-  Auth,
+  Auth, authState,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut, updateProfile,
 } from "@angular/fire/auth";
+import {map, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -43,4 +44,5 @@ export class AuthService {
   private async setUserName(username: string) {
     await updateProfile(this.auth.currentUser!, { displayName: username })
   }
+
 }

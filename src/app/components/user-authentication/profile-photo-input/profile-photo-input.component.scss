@@ -1,3 +1,17 @@
-ion-button {
-  height: 120px;
+button {
+  box-sizing: content-box;
+  height: 150px;
+  width: 150px;
+  padding: 1rem;
+  border-radius: 50%;
+  background: none;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+ion-avatar {
+  height: 150px;
+  width: 150px;
 }

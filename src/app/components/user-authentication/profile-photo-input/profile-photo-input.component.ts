@@ -1,32 +1,42 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {ProfilePhotoService} from "../../../services/user/profile-photo.service";
-import {IonicModule, ViewWillLeave} from "@ionic/angular";
+import {IonicModule} from "@ionic/angular";
 import {NgIf, NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-profile-photo-input',
   templateUrl: './profile-photo-input.component.html',
   styleUrls: ['./profile-photo-input.component.scss'],
-  imports: [
-    IonicModule,
-    NgIf,
-    NgOptimizedImage
-  ],
+  imports: [IonicModule, NgIf, NgOptimizedImage],
   standalone: true
 })
 export class ProfilePhotoInputComponent implements OnInit, OnDestroy {
   @Input() control!: FormControl
+  @Input() profilePhotoUrl: string | null | undefined
   profilePhotoFile: File | null = null
   notYetUploadedProfilePhotoUrl: string | null = null
 
   constructor(private profilePhotoService: ProfilePhotoService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.control.valueChanges.subscribe(profilePhotoFile => this.onControlValueChanged(profilePhotoFile))
+  }
 
   ngOnDestroy() {
-    if (this.notYetUploadedProfilePhotoUrl)
+    this.destroyNotYetUploadedProfilePhotoUrl()
+  }
+
+  private destroyNotYetUploadedProfilePhotoUrl() {
+    if (this.notYetUploadedProfilePhotoUrl) {
       this.profilePhotoService.revokeNotYetUploadedProfilePhotoURl(this.notYetUploadedProfilePhotoUrl)
+      this.notYetUploadedProfilePhotoUrl = null
+    }
+  }
+
+  onControlValueChanged(profilePhotoFile: File | null) {
+    if (profilePhotoFile === null)
+      this.destroyNotYetUploadedProfilePhotoUrl()
   }
 
   onImageFileChanged(event: Event) {

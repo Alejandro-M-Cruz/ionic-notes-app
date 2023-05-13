@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {getDownloadURL, ref, Storage, uploadBytes} from "@angular/fire/storage";
+import {deleteObject, getDownloadURL, ref, Storage, uploadBytes} from "@angular/fire/storage";
 import {UserService} from "./user.service";
 import {DomSanitizer} from "@angular/platform-browser";
 
@@ -21,11 +21,22 @@ export class ProfilePhotoService {
   }
 
   async uploadUserProfilePhoto(profilePhoto: File) {
-    const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}/${profilePhoto.name}`
     try {
+      const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
       const uploadResult = await uploadBytes(ref(this.storage, path), profilePhoto)
       const profilePhotoUrl = await getDownloadURL(uploadResult.ref)
       await this.userService.updateProfilePhotoUrl(profilePhotoUrl)
+    } catch (e: any) {
+      console.error(e)
+      throw e
+    }
+  }
+
+  async deleteUserProfilePhoto() {
+    try {
+      const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
+      await this.userService.removeUserProfilePhoto()
+      await deleteObject(ref(this.storage, path))
     } catch (e: any) {
       console.error(e)
       throw e

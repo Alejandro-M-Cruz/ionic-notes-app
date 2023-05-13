@@ -1,14 +1,14 @@
 <input #profilePhotoInput hidden type="file" accept="image/*" (change)="onImageFileChanged($event)">
-<ion-button fill="clear" shape="round">
-  <ion-avatar (click)="profilePhotoInput.click()" slot="icon-only">
+<button (click)="profilePhotoInput.click()">
+  <ion-avatar slot="icon-only">
     <img
-      width="100"
-      height="100"
+      width="150"
+      height="150"
       alt="Selected profile photo"
-      [src]="notYetUploadedProfilePhotoUrl ?? 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+      [src]="notYetUploadedProfilePhotoUrl ?? profilePhotoUrl ?? 'https://ionicframework.com/docs/img/demos/avatar.svg'"
     >
   </ion-avatar>
-</ion-button>
+</button>
 
 
 

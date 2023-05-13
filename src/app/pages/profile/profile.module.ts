@@ -13,6 +13,7 @@ import {DeleteConfirmationComponent} from "../../components/delete-confirmation/
 import {
   ProfilePhotoInputComponent
 } from "../../components/user-authentication/profile-photo-input/profile-photo-input.component";
+import {ProfilePhotoModifierComponent} from "./profile-photo-modifier/profile-photo-modifier.component";
 
 @NgModule({
   imports: [
@@ -26,6 +27,6 @@ import {
     NgOptimizedImage,
     ProfilePhotoInputComponent
   ],
-  declarations: [ProfilePage]
+    declarations: [ProfilePage, ProfilePhotoModifierComponent]
 })
 export class ProfilePageModule {}

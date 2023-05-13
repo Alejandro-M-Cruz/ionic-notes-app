@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {NotesService} from "../../services/notes/notes.service";
 import {FormBuilder, Validators} from "@angular/forms";
@@ -25,14 +25,14 @@ export class NoteEditorPage implements OnInit {
 
   async ngOnInit() {
     this.getNoteIdFromRouteParams()
-    await this.getNoteFormInitialValue()
+    await this.loadNoteFormInitialValue()
   }
 
   private getNoteIdFromRouteParams() {
     this.noteId = this.route.snapshot.paramMap.get('noteId')
   }
 
-  private async getNoteFormInitialValue() {
+  private async loadNoteFormInitialValue() {
     if (this.noteId)
       this.noteForm.patchValue(await this.notesService.getNoteById(this.noteId))
   }

@@ -13,28 +13,24 @@
         <ion-card>
           <ion-card-header>
             <ion-row class="ion-justify-content-center">
-              <app-profile-photo-input [control]="profilePhotoFormControl"></app-profile-photo-input>
-            </ion-row>
-            <ion-row class="ion-justify-content-center" *ngIf="profilePhotoChanged">
-              <ion-button color="danger">Cancel</ion-button>
-              <ion-button color="success">Confirm</ion-button>
+              <app-profile-photo-modifier [profilePhotoUrl]="user$.value?.photoUrl"></app-profile-photo-modifier>
             </ion-row>
           </ion-card-header>
           <ion-card-content>
             <ion-list>
               <ion-item lines="full">
-                <ion-label><strong>Username:</strong></ion-label>{{user?.username}}
+                <ion-label><strong>Username:</strong></ion-label>{{user$.value?.username}}
               </ion-item>
               <ion-item lines="full">
-                <ion-label><strong>Email:</strong></ion-label>{{user?.email}}
+                <ion-label><strong>Email:</strong></ion-label>{{user$.value?.email}}
               </ion-item>
               <ion-item lines="full">
                 <ion-label><strong>Account creation date:</strong></ion-label>
-                {{user?.creationTimestamp | date: 'medium'}}
+                {{user$.value?.creationTimestamp | date: 'medium'}}
               </ion-item>
               <ion-item lines="full">
-                <ion-label><strong>Last sign in:</strong></ion-label>
-                {{user?.creationTimestamp | date: 'medium'}}
+                <ion-label><strong>Last log-in:</strong></ion-label>
+                {{user$.value?.lastSignInTimestamp | date: 'medium'}}
               </ion-item>
               <ion-item lines="full">
                 <ion-label><strong>Notes:</strong></ion-label>
@@ -48,8 +44,19 @@
               </ion-item>
             </ion-list>
             <ion-row class="ion-justify-content-around ion-margin-top">
-              <ion-button id="open-account-deletion-confirmation" color="danger">Delete account</ion-button>
-              <ion-button (click)="onSignOutButtonClicked()" color="warning">Sign out</ion-button>
+              <ion-button id="open-account-deletion-confirmation" color="danger">
+                Delete account
+              </ion-button>
+              <ion-button
+                color="tertiary"
+                (click)="onRemoveProfilePhotoButtonClicked()"
+                [disabled]="!user$.value?.photoUrl"
+              >
+                Remove profile photo
+              </ion-button>
+              <ion-button (click)="onSignOutButtonClicked()" color="warning">
+                Log out
+              </ion-button>
             </ion-row>
           </ion-card-content>
         </ion-card>
