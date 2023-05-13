@@ -1,16 +1,11 @@
 import { Injectable } from '@angular/core';
+import {ErrorMessage} from "./errors.service";
 import {AlertController} from "@ionic/angular";
-
-export enum ErrorMessage {
-  REQUIRES_RECENT_LOGIN = 'You must have logged in recently to delete your account',
-  UNKNOWN = 'An error occurred'
-}
 
 @Injectable({
   providedIn: 'root'
 })
-export class ErrorsService {
-
+export class AlertsService {
   constructor(private alertController: AlertController) { }
 
   async showErrorAlert(error: ErrorMessage) {
@@ -21,5 +16,4 @@ export class ErrorsService {
     })
     await errorAlert.present()
   }
-
 }

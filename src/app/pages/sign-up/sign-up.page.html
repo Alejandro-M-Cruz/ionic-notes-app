@@ -7,13 +7,29 @@
     <app-toolbar title="Sign up"></app-toolbar>
   </ion-header>
   <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
-    <app-username-input [control]="signUpForm.controls.username"></app-username-input>
-    <app-email-input [control]="signUpForm.controls.email"></app-email-input>
-    <app-password-input [control]="signUpForm.controls.password"></app-password-input>
-    <app-password-input [control]="signUpForm.controls.passwordConfirmation"></app-password-input>
-    <app-profile-photo-input [control]="signUpForm.controls.profilePhoto"></app-profile-photo-input>
-    <p>If you already have an account, <a routerLink="/sign-in">LOG IN HERE</a></p>
-    <ion-button (click)="navigateToHome()">Cancel</ion-button>
-    <ion-button type="submit" [disabled]="signUpForm.invalid">Sign up</ion-button>
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="12" size-sm="10" size-md="8" size-xl="6" class="inputs-col">
+          <app-username-input [control]="signUpForm.controls.username"></app-username-input>
+          <app-email-input [control]="signUpForm.controls.email"></app-email-input>
+          <app-password-input [control]="signUpForm.controls.password"></app-password-input>
+          <app-password-input [control]="signUpForm.controls.passwordConfirmation"></app-password-input>
+          <ion-label
+            class="ion-text-center ion-margin-bottom"
+            color="danger" *ngIf="signUpForm.errors?.['passwordsDoNotMatch']"
+          >
+            Passwords do not match
+          </ion-label>
+          <app-profile-photo-input [control]="signUpForm.controls.profilePhoto"></app-profile-photo-input>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-label class="ion-text-center ion-margin-vertical">
+      If you already have an account, <a routerLink="/sign-in">LOG IN HERE</a>
+    </ion-label>
+    <ion-row class="ion-justify-content-center">
+      <ion-button class="ion-margin-horizontal" (click)="navigateToHome()" color="warning">Cancel</ion-button>
+      <ion-button class="ion-margin-horizontal" type="submit" [disabled]="signUpForm.invalid" color="tertiary">Sign up</ion-button>
+    </ion-row>
   </form>
 </ion-content>

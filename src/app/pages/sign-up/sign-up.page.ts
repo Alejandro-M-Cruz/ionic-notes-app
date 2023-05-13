@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, ValidatorFn, Validators} from "@angular/forms";
 import {User} from "../../model/user.model";
 import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
+import {AlertsService} from "../../services/alerts/alerts.service";
 
 @Component({
   selector: 'app-sign-up',
@@ -16,6 +17,10 @@ export class SignUpPage implements OnInit {
     Validators.maxLength(User.MAX_PASSWORD_LENGTH),
     Validators.required
   ]
+  private passwordsMatch: ValidatorFn = (form: any) => {
+    const { password, passwordConfirmation } = form.controls
+    return password.value === passwordConfirmation.value ? null : { passwordsDoNotMatch: true }
+  }
   signUpForm = this.formBuilder.nonNullable.group({
     username: ['', [
       Validators.minLength(User.MIN_USERNAME_LENGTH),
@@ -26,17 +31,17 @@ export class SignUpPage implements OnInit {
     password: ['', this.passwordValidators],
     passwordConfirmation: ['', this.passwordValidators],
     profilePhoto: new FormControl<File | null>(null)
-  })
+  }, {validators: [this.passwordsMatch]})
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private profilePhotoService: ProfilePhotoService
+    private profilePhotoService: ProfilePhotoService,
+    private alertsService: AlertsService
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async navigateToHome() {
     await this.router.navigate(['/home'])
@@ -44,11 +49,7 @@ export class SignUpPage implements OnInit {
 
   private async signUp() {
     const { email, password, username } = this.signUpForm.controls
-    await this.authService.createUser(
-      email.value!,
-      password.value!,
-      username.value!
-    )
+    await this.authService.createUser(email.value!, password.value!, username.value!)
   }
 
   async onSubmit() {
@@ -57,8 +58,7 @@ export class SignUpPage implements OnInit {
       await this.uploadUserProfilePhoto()
       await this.navigateToHome()
     } catch (e: any) {
-      console.error(e)
-      alert(e.message)
+      await this.alertsService.showErrorAlert(e.message)
     }
   }
 

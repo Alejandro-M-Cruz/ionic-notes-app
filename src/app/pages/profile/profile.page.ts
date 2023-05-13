@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {AccountDeletionService} from "../../services/user/account-deletion.service";
 import {NotesService} from "../../services/notes/notes.service";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
+import {AlertsService} from "../../services/alerts/alerts.service";
 
 @Component({
   selector: 'app-profile',
@@ -23,6 +24,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     private userService: UserService,
     private authService: AuthService,
     private notesService: NotesService,
+    private alertsService: AlertsService,
     private accountDeletionService: AccountDeletionService,
     private profilePhotoService: ProfilePhotoService,
     private router: Router
@@ -51,8 +53,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       await this.authService.signOut()
       await this.router.navigate(['/home'])
     } catch (e: any) {
-      console.error(e)
-      alert(e.message)
+      await this.alertsService.showErrorAlert(e.message)
     }
   }
 

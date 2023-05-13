@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {User} from "../../model/user.model";
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/user/auth.service";
+import {AlertsService} from "../../services/alerts/alerts.service";
 
 @Component({
   selector: 'app-sign-in',
@@ -22,11 +23,11 @@ export class SignInPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertsService: AlertsService
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async navigateToHome() {
     await this.router.navigate(['/home'])
@@ -42,8 +43,7 @@ export class SignInPage implements OnInit {
       await this.signIn()
       await this.navigateToHome()
     } catch (e: any) {
-      console.error(e)
-      alert(e.message)
+      await this.alertsService.showErrorAlert(e.message)
     }
   }
 

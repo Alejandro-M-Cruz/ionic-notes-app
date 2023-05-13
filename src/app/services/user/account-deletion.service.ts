@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Auth, deleteUser} from "@angular/fire/auth";
 import {NotesService} from "../notes/notes.service";
-import {ErrorMessage} from "../errors.service";
+import {ErrorMessage} from "../alerts/errors.service";
 import {AuthService} from "./auth.service";
 
 @Injectable({

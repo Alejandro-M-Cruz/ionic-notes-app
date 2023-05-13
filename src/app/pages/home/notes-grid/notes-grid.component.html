@@ -24,7 +24,7 @@
     class="ion-margin"
     color="tertiary"
     (click)="revertNotesOrder()"
-    [disabled]="!(userNotes$ | async)?.length"
+    [disabled]="((userNotes$ | async)?.length ?? 0) < 2"
   >
     <ion-icon name="swap-vertical"></ion-icon>
   </ion-fab-button>

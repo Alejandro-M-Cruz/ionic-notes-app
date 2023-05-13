@@ -8,11 +8,21 @@
   </ion-header>
 
   <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
-    <app-email-input [control]="signInForm.controls.email"></app-email-input>
-    <app-password-input [control]="signInForm.controls.password"></app-password-input>
-    <p>If you have not created an account yet, <a routerLink="/sign-up">SIGN UP HERE</a></p>
-    <ion-button (click)="navigateToHome()">Cancel</ion-button>
-    <ion-button type="submit" [disabled]="signInForm.invalid">Log in</ion-button>
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="12" size-sm="10" size-md="8" size-xl="6" class="inputs-col">
+          <app-email-input [control]="signInForm.controls.email"></app-email-input>
+          <app-password-input [control]="signInForm.controls.password"></app-password-input>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-label class="ion-text-center ion-margin-vertical">
+      If you have not created an account yet, <a routerLink="/sign-up">SIGN UP HERE</a>
+    </ion-label>
+    <ion-row class="ion-justify-content-center">
+      <ion-button class="ion-margin-horizontal" (click)="navigateToHome()" color="warning">Cancel</ion-button>
+      <ion-button class="ion-margin-horizontal" type="submit" [disabled]="signInForm.invalid">Log in</ion-button>
+    </ion-row>
   </form>
 
 </ion-content>

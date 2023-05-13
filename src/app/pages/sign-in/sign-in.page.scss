@@ -1,0 +1,23 @@
+a {
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--ion-color-tertiary);
+}
+
+.inputs-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+
+  * {
+    margin: 12px 0;
+    width: 100%;
+  }
+}
+
+ion-label {
+  display: block;
+  width: 100%;
+}
