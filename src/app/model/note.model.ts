@@ -5,8 +5,8 @@ export enum NotesSortingMethod {
 }
 
 export class Note {
-  static readonly MAX_TITLE_LENGTH = 1000
-  static readonly MAX_CONTENT_LENGTH = 100000
+  static readonly TITLE_MAX_LENGTH = 1000
+  static readonly CONTENT_MAX_LENGTH = 10000
   id!: string
   title!: string
   content!: string

@@ -29,10 +29,10 @@
     <ion-icon name="swap-vertical"></ion-icon>
   </ion-fab-button>
   <ion-fab-button
-    id="open-delete-confirmation"
     color="danger"
     [disabled]="!(userNotes$ | async)?.length"
     class="ion-margin"
+    (click)="onNotesDeletionButtonClicked()"
   >
     <ion-icon name="trash"></ion-icon>
   </ion-fab-button>
@@ -40,11 +40,3 @@
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
 </ion-fab>
-<app-delete-confirmation
-  [title]="showFavouritesOnly ?
-     'Are you sure you want to delete all your favourite notes?' :
-     'Are you sure you want to delete all your notes?'
-  "
-  triggerButtonId="open-delete-confirmation"
-  (confirmationClosed)="onDeleteConfirmationClosed($event)"
-></app-delete-confirmation>

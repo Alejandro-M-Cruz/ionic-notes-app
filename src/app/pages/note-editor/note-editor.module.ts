@@ -8,6 +8,10 @@ import { NoteEditorPageRoutingModule } from './note-editor-routing.module';
 
 import { NoteEditorPage } from './note-editor.page';
 import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
+import {
+    NoteFavouriteButtonComponent
+} from "../../components/notes/note-favourite-button/note-favourite-button.component";
+import {NoteDeletionButtonComponent} from "../../components/notes/note-deletion-button/note-deletion-button.component";
 
 @NgModule({
   imports: [
@@ -16,7 +20,9 @@ import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
     IonicModule,
     NoteEditorPageRoutingModule,
     ToolbarComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NoteFavouriteButtonComponent,
+    NoteDeletionButtonComponent
   ],
   declarations: [NoteEditorPage]
 })

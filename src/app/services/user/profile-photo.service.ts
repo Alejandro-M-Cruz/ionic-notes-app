@@ -21,25 +21,15 @@ export class ProfilePhotoService {
   }
 
   async uploadUserProfilePhoto(profilePhoto: File) {
-    try {
-      const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
-      const uploadResult = await uploadBytes(ref(this.storage, path), profilePhoto)
-      const profilePhotoUrl = await getDownloadURL(uploadResult.ref)
-      await this.userService.updateProfilePhotoUrl(profilePhotoUrl)
-    } catch (e: any) {
-      console.error(e)
-      throw e
-    }
+    const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
+    const uploadResult = await uploadBytes(ref(this.storage, path), profilePhoto)
+    const profilePhotoUrl = await getDownloadURL(uploadResult.ref)
+    await this.userService.updateProfilePhotoUrl(profilePhotoUrl)
   }
 
   async deleteUserProfilePhoto() {
-    try {
-      const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
-      await this.userService.removeUserProfilePhoto()
-      await deleteObject(ref(this.storage, path))
-    } catch (e: any) {
-      console.error(e)
-      throw e
-    }
+    const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
+    await this.userService.removeUserProfilePhoto()
+    await deleteObject(ref(this.storage, path))
   }
 }

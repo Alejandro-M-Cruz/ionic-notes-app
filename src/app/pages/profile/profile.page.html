@@ -17,26 +17,26 @@
             </ion-row>
           </ion-card-header>
           <ion-card-content>
-            <ion-list>
-              <ion-item lines="full">
+            <ion-list lines="full">
+              <ion-item>
                 <ion-label><strong>Username:</strong></ion-label>{{user$.value?.username}}
               </ion-item>
-              <ion-item lines="full">
+              <ion-item>
                 <ion-label><strong>Email:</strong></ion-label>{{user$.value?.email}}
               </ion-item>
-              <ion-item lines="full">
+              <ion-item>
                 <ion-label><strong>Account creation:</strong></ion-label>
                 {{user$.value?.creationTimestamp | date: 'medium'}}
               </ion-item>
-              <ion-item lines="full">
+              <ion-item>
                 <ion-label><strong>Last log-in:</strong></ion-label>
                 {{user$.value?.lastSignInTimestamp | date: 'medium'}}
               </ion-item>
-              <ion-item lines="full">
+              <ion-item>
                 <ion-label><strong>Notes:</strong></ion-label>
                 <ion-badge class="ion-padding-horizontal">{{userNotesQuantity$ | async}}</ion-badge>
               </ion-item>
-              <ion-item lines="full">
+              <ion-item>
                 <ion-label><strong>Favourites:</strong></ion-label>
                 <ion-badge color="success" class="ion-padding-horizontal">
                   {{userFavouriteNotesQuantity$ | async}}
@@ -44,17 +44,17 @@
               </ion-item>
             </ion-list>
             <ion-row class="ion-justify-content-around ion-margin-top">
-              <ion-button id="open-account-deletion-confirmation" color="danger">
+              <ion-button color="danger" (click)="onDeleteAccountButtonClicked()">
                 Delete account
               </ion-button>
               <ion-button
-                color="tertiary"
-                (click)="onRemoveProfilePhotoButtonClicked()"
+                color="warning"
+                (click)="onProfilePhotoRemovalButtonClicked()"
                 [disabled]="!user$.value?.photoUrl"
               >
                 Remove profile photo
               </ion-button>
-              <ion-button (click)="onSignOutButtonClicked()" color="warning">
+              <ion-button (click)="onSignOutButtonClicked()" color="tertiary">
                 Log out
               </ion-button>
             </ion-row>
@@ -65,9 +65,3 @@
   </ion-grid>
 
 </ion-content>
-
-<app-delete-confirmation
-  title="Are you sure you want to delete your account and all of your notes? This action cannot be undone."
-  triggerButtonId="open-account-deletion-confirmation"
-  (confirmationClosed)="onAccountDeletionConfirmationClosed($event)"
-></app-delete-confirmation>

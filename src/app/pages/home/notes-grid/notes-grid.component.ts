@@ -3,6 +3,8 @@ import {Note, NotesSortingMethod} from "../../../model/note.model";
 import {Router} from "@angular/router";
 import {NotesService} from "../../../services/notes/notes.service";
 import {Observable} from "rxjs";
+import {AlertsService} from "../../../services/alerts/alerts.service";
+import {ErrorsService} from "../../../services/alerts/errors.service";
 
 @Component({
   selector: 'app-notes-grid',
@@ -14,7 +16,12 @@ export class NotesGridComponent  implements OnInit {
   userNotes$: Observable<Note[]> = this.notesService.getUserNotes$(this.showFavouritesOnly)
   notesSortingMethod = NotesSortingMethod.DEFAULT
 
-  constructor(private notesService: NotesService, private router: Router) {}
+  constructor(
+    private notesService: NotesService,
+    private errorsService: ErrorsService,
+    private alertsService: AlertsService,
+    private router: Router
+  ) {}
 
   ngOnInit() {}
 
@@ -29,12 +36,29 @@ export class NotesGridComponent  implements OnInit {
     await this.router.navigate(['note-editor'])
   }
 
-  async onDeleteConfirmationClosed(shouldDeleteAllNotes: boolean) {
-    if (shouldDeleteAllNotes) {
-      this.showFavouritesOnly ?
-        await this.notesService.deleteUserFavouriteNotes() :
-        await this.notesService.deleteAllUserNotes()
+  async onNotesDeletionConfirmationClosed(shouldDeleteAllNotes: boolean) {
+    try {
+      if (shouldDeleteAllNotes) {
+        this.showFavouritesOnly ?
+          await this.notesService.deleteUserFavouriteNotes() :
+          await this.notesService.deleteAllUserNotes()
+      }
+    } catch (e: any) {
+      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
     }
+  }
+
+  get notesDeletionConfirmationMessage() {
+    return this.showFavouritesOnly ?
+      'Are you sure you want to delete all your favourite notes?' :
+      'Are you sure you want to delete all your notes?'
+  }
+
+  async onNotesDeletionButtonClicked() {
+    await this.alertsService.showDeleteConfirmationAlert(
+      this.notesDeletionConfirmationMessage,
+      this.onNotesDeletionConfirmationClosed.bind(this)
+    )
   }
 
   revertNotesOrder() {

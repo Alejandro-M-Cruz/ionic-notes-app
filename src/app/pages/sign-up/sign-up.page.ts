@@ -5,6 +5,7 @@ import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
+import {ErrorsService} from "../../services/alerts/errors.service";
 
 @Component({
   selector: 'app-sign-up',
@@ -18,8 +19,8 @@ export class SignUpPage implements OnInit {
     Validators.required
   ]
   private passwordsMatch: ValidatorFn = (form: any) => {
-    const { password, passwordConfirmation } = form.controls
-    return password.value === passwordConfirmation.value ? null : { passwordsDoNotMatch: true }
+    const { password, passwordConfirmation } = form.value
+    return password === passwordConfirmation ? null : { passwordsDoNotMatch: true }
   }
   signUpForm = this.formBuilder.nonNullable.group({
     username: ['', [
@@ -38,7 +39,8 @@ export class SignUpPage implements OnInit {
     private authService: AuthService,
     private router: Router,
     private profilePhotoService: ProfilePhotoService,
-    private alertsService: AlertsService
+    private alertsService: AlertsService,
+    private errorsService: ErrorsService
   ) { }
 
   ngOnInit() {}
@@ -48,8 +50,8 @@ export class SignUpPage implements OnInit {
   }
 
   private async signUp() {
-    const { email, password, username } = this.signUpForm.controls
-    await this.authService.createUser(email.value!, password.value!, username.value!)
+    const { email, password, username } = this.signUpForm.value
+    await this.authService.createUser(email!, password!, username!)
   }
 
   async onSubmit() {
@@ -58,13 +60,13 @@ export class SignUpPage implements OnInit {
       await this.uploadUserProfilePhoto()
       await this.navigateToHome()
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(e.message)
+      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
     }
   }
 
   private async uploadUserProfilePhoto() {
-    const { profilePhoto } = this.signUpForm.controls
-    if (profilePhoto.value)
-      await this.profilePhotoService.uploadUserProfilePhoto(profilePhoto.value)
+    const { profilePhoto } = this.signUpForm.value
+    if (profilePhoto)
+      await this.profilePhotoService.uploadUserProfilePhoto(profilePhoto)
   }
 }

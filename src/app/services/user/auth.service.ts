@@ -5,40 +5,24 @@ import {
   signInWithEmailAndPassword,
   signOut, updateProfile,
 } from "@angular/fire/auth";
-import {ErrorsService} from "../alerts/errors.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private auth: Auth, private errorsService: ErrorsService) { }
+  constructor(private auth: Auth) { }
 
   async signIn(email: string, password: string) {
-    try {
-      await signInWithEmailAndPassword(this.auth, email, password)
-    } catch (e: any) {
-      console.error(e)
-      throw new Error(this.errorsService.identifyFirebaseError(e))
-    }
+    await signInWithEmailAndPassword(this.auth, email, password)
   }
 
   async signOut() {
-    try {
-      await signOut(this.auth)
-    } catch (e: any) {
-      console.error(e)
-      throw new Error(this.errorsService.identifyFirebaseError(e))
-    }
+    await signOut(this.auth)
   }
 
   async createUser(email: string, password: string, username: string) {
-    try {
-      await createUserWithEmailAndPassword(this.auth, email, password)
-      await this.setUsername(username)
-    } catch (e: any) {
-      console.error(e)
-      throw new Error(this.errorsService.identifyFirebaseError(e))
-    }
+    await createUserWithEmailAndPassword(this.auth, email, password)
+    await this.setUsername(username)
   }
 
   private async setUsername(username: string) {

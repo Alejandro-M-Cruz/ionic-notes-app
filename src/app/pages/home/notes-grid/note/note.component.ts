@@ -15,20 +15,8 @@ export class NoteComponent  implements OnInit {
 
   ngOnInit() {}
 
-  async onFavouriteButtonClicked() {
-    await this.notesService.toggleNoteIsFavourite(this.note)
-  }
-
   async onEditNoteButtonClicked() {
     await this.router.navigate(['note-editor', { noteId: this.note.id }])
   }
 
-  async onDeleteNotesConfirmationClosed(shouldDeleteNote: boolean) {
-    if (shouldDeleteNote)
-      await this.notesService.deleteNote(this.note.id)
-  }
-
-  getNoteTitlePreview() {
-    return this.note.title.length > 50 ? this.note.title.substring(0, 50) + '...' : this.note.title
-  }
 }

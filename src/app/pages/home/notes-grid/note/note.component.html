@@ -6,20 +6,11 @@
     <ion-card-title>{{note.title}}</ion-card-title>
   </ion-card-content>
   <ion-row class="ion-justify-content-around">
-    <ion-button fill="clear" color="success" (click)="onFavouriteButtonClicked()">
-      <ion-icon [name]="note.isFavourite ? 'heart' : 'heart-outline'"></ion-icon>
-    </ion-button>
-    <ion-button [id]="'delete-button' + note.id" fill="clear" color="danger">
-      <ion-icon name="close-circle-outline"></ion-icon>
-    </ion-button>
+    <app-note-favourite-button [note]="note"></app-note-favourite-button>
+    <app-note-deletion-button [note]="note"></app-note-deletion-button>
     <ion-button fill="clear" (click)="onEditNoteButtonClicked()">
       <ion-icon name="create-outline"></ion-icon>
     </ion-button>
   </ion-row>
 </ion-card>
 
-<app-delete-confirmation
-  title='Are you sure you want to delete the note with title "{{getNoteTitlePreview()}}"?'
-  [triggerButtonId]="'delete-button' + note.id"
-  (confirmationClosed)="onDeleteNotesConfirmationClosed($event)"
-></app-delete-confirmation>

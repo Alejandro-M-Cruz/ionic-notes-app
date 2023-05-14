@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { DeleteConfirmationComponent } from './delete-confirmation.component';
+import { NoteFavouriteButtonComponent } from './note-favourite-button.component';
 
-describe('DeleteAllNotesConfirmationComponent', () => {
-  let component: DeleteConfirmationComponent;
-  let fixture: ComponentFixture<DeleteConfirmationComponent>;
+describe('NoteFavouriteButtonComponent', () => {
+  let component: NoteFavouriteButtonComponent;
+  let fixture: ComponentFixture<NoteFavouriteButtonComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeleteConfirmationComponent ],
+      declarations: [ NoteFavouriteButtonComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DeleteConfirmationComponent);
+    fixture = TestBed.createComponent(NoteFavouriteButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

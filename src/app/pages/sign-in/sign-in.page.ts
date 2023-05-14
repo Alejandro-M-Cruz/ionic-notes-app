@@ -4,6 +4,7 @@ import {User} from "../../model/user.model";
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/user/auth.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
+import {ErrorsService} from "../../services/alerts/errors.service";
 
 @Component({
   selector: 'app-sign-in',
@@ -24,7 +25,8 @@ export class SignInPage implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private alertsService: AlertsService
+    private alertsService: AlertsService,
+    private errorsService: ErrorsService
   ) { }
 
   ngOnInit() {}
@@ -34,8 +36,8 @@ export class SignInPage implements OnInit {
   }
 
   private async signIn() {
-    const { email, password } = this.signInForm.controls
-    await this.authService.signIn(email.value!, password.value!)
+    const { email, password } = this.signInForm.value
+    await this.authService.signIn(email!, password!)
   }
 
   async onSubmit() {
@@ -43,7 +45,7 @@ export class SignInPage implements OnInit {
       await this.signIn()
       await this.navigateToHome()
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(e.message)
+      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
     }
   }
 

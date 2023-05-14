@@ -1,14 +1,6 @@
 import {Injectable} from '@angular/core';
 import {
-  addDoc,
-  collection,
-  collectionData,
-  deleteDoc,
-  doc,
-  Firestore, getDoc,
-  query,
-  setDoc, updateDoc,
-  where
+  addDoc, collection, collectionData, deleteDoc, doc, Firestore, getDoc, orderBy, query, updateDoc, where
 } from "@angular/fire/firestore";
 import {firstValueFrom, map, Observable} from "rxjs";
 import {Note, NotesSortingMethod} from "../../model/note.model";
@@ -19,7 +11,6 @@ import {UserService} from "../user/user.service";
 })
 export class NotesService {
   private notesCollection = collection(this.firestore, 'notes')
-  private userNotes$?: Observable<Note[]>
 
   constructor(
     private firestore: Firestore,
@@ -34,30 +25,20 @@ export class NotesService {
     }
   }
 
-  private loadUserNotesFromFirestore() {
-    const q = query(
-      this.notesCollection,
-      where('userId', '==', this.userService.currentUser!.uid)
-    )
-    this.userNotes$ = collectionData(q, {idField: 'id'}).pipe(
-      map(userNotes => userNotes.map(this.firestoreDocDataToNote))
-    )
-  }
-
   getNoteById(noteId: string): Promise<Note> {
     return getDoc(doc(this.notesCollection, noteId))
-      .then(doc => this.firestoreDocDataToNote(doc.data()))
+      .then(doc => this.firestoreDocDataToNote({id: doc.id, ...doc.data()}))
   }
 
   getUserNotes$(favouritesOnly: boolean = false, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
-    if (!this.userNotes$)
-      this.loadUserNotesFromFirestore()
-    const userNotes$ = favouritesOnly ?
-      this.userNotes$!.pipe(map(userNotes => userNotes.filter(note => note.isFavourite))) :
-      this.userNotes$!
-    return userNotes$.pipe(
-      map(userNotes => userNotes.sort(this.getSortFunction(sortingMethod))),
-    )
+    const queryConstraints = [
+      where('userId', '==', this.userService.currentUser!.uid),
+      this.getSortFunction(sortingMethod)
+    ]
+    if (favouritesOnly)
+      queryConstraints.push(where('isFavourite', '==', true))
+    return collectionData(query(this.notesCollection, ...queryConstraints), {idField: 'id'})
+      .pipe(map(notes => notes.map(this.firestoreDocDataToNote)))
   }
 
   getUserNotesQuantity$(favouritesOnly: boolean = false): Observable<number> {
@@ -67,9 +48,9 @@ export class NotesService {
   private getSortFunction(sortingMethod?: NotesSortingMethod): any {
     switch(sortingMethod) {
       case NotesSortingMethod.LAST_UPDATED_FIRST:
-        return (a: Note, b: Note) => b.lastUpdateTimestamp.getTime() - a.lastUpdateTimestamp.getTime()
+        return orderBy('lastUpdateTimestamp', 'desc')
       case NotesSortingMethod.LAST_UPDATED_LAST:
-        return (a: Note, b: Note) => a.lastUpdateTimestamp.getTime() - b.lastUpdateTimestamp.getTime()
+        return orderBy('lastUpdateTimestamp', 'asc')
       default:
         return this.getSortFunction(NotesSortingMethod.DEFAULT)
     }
@@ -104,7 +85,7 @@ export class NotesService {
   }
 
   async updateNote(noteId: string, note: Note) {
-    await setDoc(doc(this.notesCollection, noteId), {
+    await updateDoc(doc(this.notesCollection, noteId), {
       ...note,
       lastUpdateTimestamp: new Date()
     })

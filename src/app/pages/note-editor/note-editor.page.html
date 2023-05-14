@@ -7,23 +7,81 @@
     <app-toolbar title="Note editor"></app-toolbar>
   </ion-header>
 
-  <ion-list>
-  </ion-list>
-  <form [formGroup]="noteForm">
-    <ion-textarea
-      class="title-textarea"
-      label="Title"
-      placeholder="Type the note title here..."
-      formControlName="title"
-    ></ion-textarea>
-    <ion-textarea
-      class="content-textarea"
-      label="Content"
-      placeholder="Type the content of the note here..."
-      formControlName="content"
-    ></ion-textarea>
-    <ion-button color="danger" (click)="onCancelButtonClicked()">Cancel</ion-button>
-    <ion-button (click)="onConfirmButtonClicked()">Confirm</ion-button>
+  <ion-row class="ion-justify-content-center ion-margin">
+  </ion-row>
+
+  <form [formGroup]="noteForm" (ngSubmit)="onSubmit()">
+    <ion-grid>
+      <ion-row class="ion-justify-content-center ion-margin-bottom" *ngIf="initialNote">
+        <app-note-favourite-button [note]="initialNote"></app-note-favourite-button>
+        <ion-button class="ion-margin-horizontal" shape="round" id="open-details" color="tertiary">
+          <strong>Details</strong>
+        </ion-button>
+        <app-note-deletion-button [note]="initialNote"></app-note-deletion-button>
+      </ion-row>
+      <ion-row class="ion-justify-content-center ion-margin">
+        <ion-col size="12" sizeMd="10" sizeXl="8">
+          <ion-textarea
+            label="Title"
+            labelPlacement="floating"
+            placeholder="Type the note title here..."
+            [errorText]="'The title must be less than ' + titleMaxLength + ' characters long'"
+            formControlName="title"
+            fill="outline"
+            [autoGrow]="true"
+            rows="3"
+          ></ion-textarea>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center ion-margin">
+        <ion-col size="12" sizeMd="10" sizeXl="8">
+          <ion-textarea
+            label="Content"
+            labelPlacement="floating"
+            placeholder="Type the content of the note here..."
+            [errorText]="'The note cannot contain more than ' + contentMaxLength + ' characters'"
+            formControlName="content"
+            fill="outline"
+            [autoGrow]="true"
+            rows="10"
+          ></ion-textarea>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-button class="ion-margin" type="button" color="warning" (click)="onCancelButtonClicked()">Cancel</ion-button>
+        <ion-button
+          class="ion-margin"
+          type="submit"
+          [disabled]="!noteHasChanged() || noteForm.invalid"
+        >Confirm</ion-button>
+      </ion-row>
+    </ion-grid>
   </form>
+
+  <ion-modal *ngIf="initialNote" trigger="open-details">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title size="large">Note details</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list lines="full" class="ion-margin">
+          <ion-item>
+            <ion-label color="success"><strong>Favourite:</strong></ion-label>
+            {{initialNote.isFavourite ? 'Yes' : 'No'}}
+          </ion-item>
+          <ion-item>
+            <ion-label color="primary"><strong>Creation date:</strong></ion-label>
+            {{initialNote.creationTimestamp | date: 'medium'}}
+          </ion-item>
+          <ion-item>
+            <ion-label color="primary"><strong>Last update:</strong></ion-label>
+            {{initialNote.lastUpdateTimestamp | date: 'medium'}}
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 
 </ion-content>
