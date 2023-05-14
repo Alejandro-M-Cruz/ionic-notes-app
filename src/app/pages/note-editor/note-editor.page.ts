@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {NotesService} from "../../services/notes/notes.service";
+import {OnlineNotesService} from "../../services/notes/online-notes.service";
 import {FormBuilder, Validators} from "@angular/forms";
 import {Note} from "../../model/note.model";
 import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
+import {firstValueFrom, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-note-editor',
@@ -12,7 +13,8 @@ import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 })
 export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   noteId: string | null = null
-  initialNote?: Note
+  note?: Note
+  noteSubscription?: Subscription
   readonly titleMaxLength = Note.TITLE_MAX_LENGTH
   readonly contentMaxLength = Note.CONTENT_MAX_LENGTH
   noteForm = this.formBuilder.nonNullable.group({
@@ -24,26 +26,37 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private notesService: NotesService
+    private notesService: OnlineNotesService
   ) { }
 
   async ionViewWillEnter() {
     this.getNoteIdFromRouteParams()
-    await this.loadNoteFormInitialValue()
+    if (this.noteId) {
+      this.loadNoteBeingEdited()
+      await this.loadNoteFormInitialValue()
+    }
   }
 
   private getNoteIdFromRouteParams() {
     this.noteId = this.route.snapshot.paramMap.get('noteId')
   }
 
+  private loadNoteBeingEdited() {
+    this.noteSubscription = this.notesService.getNoteById(this.noteId!).subscribe(async note => {
+      this.note = note
+      if (!note)
+        await this.onNoteDeleted()
+    })
+  }
+
   private async loadNoteFormInitialValue() {
-    if (this.noteId)
-      this.noteForm.patchValue(this.initialNote = await this.notesService.getNoteById(this.noteId))
+    const initialFormValue = await firstValueFrom(this.notesService.getNoteById(this.noteId!))
+    this.noteForm.patchValue(initialFormValue!)
   }
 
   noteHasChanged(): boolean {
     const { title, content } = this.noteForm.value
-    return this.initialNote?.title !== title || this.initialNote?.content !== content
+    return this.note?.title !== title || this.note?.content !== content
   }
 
   async onCancelButtonClicked() {
@@ -63,7 +76,18 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
     await this.router.navigate(['/home'])
   }
 
-  ionViewWillLeave() {
-    this.initialNote = undefined
+  private destroyNoteSubscription() {
+    this.note = undefined
+    this.noteSubscription?.unsubscribe()
   }
+
+  private async onNoteDeleted() {
+    this.destroyNoteSubscription()
+    await this.router.navigate(['/home'])
+  }
+
+  ionViewWillLeave() {
+    this.destroyNoteSubscription()
+  }
+
 }

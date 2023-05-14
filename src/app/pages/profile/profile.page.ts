@@ -5,7 +5,7 @@ import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {AccountDeletionService} from "../../services/user/account-deletion.service";
-import {NotesService} from "../../services/notes/notes.service";
+import {OnlineNotesService} from "../../services/notes/online-notes.service";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {ErrorsService} from "../../services/alerts/errors.service";
@@ -20,15 +20,17 @@ export class ProfilePage implements OnInit, OnDestroy {
   private userSubscription?: Subscription
   userNotesQuantity$?: Observable<number>
   userFavouriteNotesQuantity$?: Observable<number>
+  private readonly accountDeletionConfirmationTitle = 'Deleting account'
   private readonly accountDeletionConfirmationMessage =
-    'Are you sure you want to delete your account and all of your notes? THIS ACTION CANNOT BE UNDONE.'
+    'Are you sure you want to delete your account and all of your notes? THIS ACTION CANNOT BE UNDONE'
+  private readonly profilePhotoRemovalConfirmationTitle = 'Removing profile photo'
   private readonly profilePhotoRemovalConfirmationMessage =
     'Are you sure you want to remove your profile photo?'
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private notesService: NotesService,
+    private notesService: OnlineNotesService,
     private alertsService: AlertsService,
     private errorsService: ErrorsService,
     private accountDeletionService: AccountDeletionService,
@@ -84,6 +86,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   async onDeleteAccountButtonClicked() {
     await this.alertsService.showDeleteConfirmationAlert(
+      this.accountDeletionConfirmationTitle,
       this.accountDeletionConfirmationMessage,
       this.onAccountDeletionConfirmationClosed.bind(this)
     )
@@ -100,6 +103,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   async onProfilePhotoRemovalButtonClicked() {
     await this.alertsService.showDeleteConfirmationAlert(
+      this.profilePhotoRemovalConfirmationTitle,
       this.profilePhotoRemovalConfirmationMessage,
       this.onProfilePhotoRemovalConfirmationClosed.bind(this)
     )

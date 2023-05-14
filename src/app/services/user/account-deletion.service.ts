@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Auth, deleteUser} from "@angular/fire/auth";
-import {NotesService} from "../notes/notes.service";
+import {OnlineNotesService} from "../notes/online-notes.service";
 
 @Injectable({
   providedIn: 'root'
@@ -8,11 +8,11 @@ import {NotesService} from "../notes/notes.service";
 export class AccountDeletionService {
   constructor(
     private auth: Auth,
-    private notesService: NotesService,
+    private onlineNotesService: OnlineNotesService,
   ) { }
 
   async deleteUserAccount() {
-    await this.notesService.deleteAllUserNotes()
+    await this.onlineNotesService.deleteAllUserNotes()
     await deleteUser(this.auth.currentUser!)
   }
 

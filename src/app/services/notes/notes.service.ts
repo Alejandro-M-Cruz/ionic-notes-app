@@ -1,99 +1,76 @@
-import {Injectable} from '@angular/core';
-import {
-  addDoc, collection, collectionData, deleteDoc, doc, Firestore, getDoc, orderBy, query, updateDoc, where
-} from "@angular/fire/firestore";
-import {firstValueFrom, map, Observable} from "rxjs";
+import {inject, Injectable} from '@angular/core';
+import {OfflineNotesService} from "./offline-notes.service";
+import {OnlineNotesService} from "./online-notes.service";
+import {Capacitor} from "@capacitor/core";
+import {ErrorMessage} from "../alerts/alerts.service";
+import {Observable} from "rxjs";
 import {Note, NotesSortingMethod} from "../../model/note.model";
-import {UserService} from "../user/user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
-  private notesCollection = collection(this.firestore, 'notes')
+  mode: 'offline' | 'online' = this.deviceIsOffline() ? 'offline' : 'online'
+  offlineNotesService?: OfflineNotesService
+  onlineNotesService?: OnlineNotesService
 
-  constructor(
-    private firestore: Firestore,
-    private userService: UserService
-  ) {}
-
-  private firestoreDocDataToNote = (docData: any): Note => {
-    return {
-      ...docData,
-      creationTimestamp: docData.creationTimestamp.toDate(),
-      lastUpdateTimestamp: docData.lastUpdateTimestamp.toDate(),
-    }
+  constructor() {
+    this.injectServices()
   }
 
-  getNoteById(noteId: string): Promise<Note> {
-    return getDoc(doc(this.notesCollection, noteId))
-      .then(doc => this.firestoreDocDataToNote({id: doc.id, ...doc.data()}))
+  private canUseOfflineMode(): boolean {
+    return Capacitor.isNativePlatform()
   }
 
-  getUserNotes$(favouritesOnly: boolean = false, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
-    const queryConstraints = [
-      where('userId', '==', this.userService.currentUser!.uid),
-      this.getSortFunction(sortingMethod)
-    ]
-    if (favouritesOnly)
-      queryConstraints.push(where('isFavourite', '==', true))
-    return collectionData(query(this.notesCollection, ...queryConstraints), {idField: 'id'})
-      .pipe(map(notes => notes.map(this.firestoreDocDataToNote)))
+  private deviceIsOffline(): boolean {
+    return !navigator.onLine
   }
 
-  getUserNotesQuantity$(favouritesOnly: boolean = false): Observable<number> {
-    return this.getUserNotes$(favouritesOnly).pipe(map(userNotes => userNotes.length))
+  private injectOfflineNotesService() {
+    this.offlineNotesService = inject(OfflineNotesService)
   }
 
-  private getSortFunction(sortingMethod?: NotesSortingMethod): any {
-    switch(sortingMethod) {
-      case NotesSortingMethod.LAST_UPDATED_FIRST:
-        return orderBy('lastUpdateTimestamp', 'desc')
-      case NotesSortingMethod.LAST_UPDATED_LAST:
-        return orderBy('lastUpdateTimestamp', 'asc')
-      default:
-        return this.getSortFunction(NotesSortingMethod.DEFAULT)
-    }
+  private injectOnlineNotesService() {
+    this.onlineNotesService = inject(OnlineNotesService)
   }
 
-  async addNote(note: Note) {
-    const now = new Date()
-    await addDoc(this.notesCollection, {
-      title: note.title,
-      content: note.content,
-      isFavourite: note.isFavourite ?? false,
-      creationTimestamp: now,
-      lastUpdateTimestamp: now,
-      userId: this.userService.currentUser!.uid
-    })
+  private injectServices() {
+    this.mode === 'offline' ? this.injectOfflineNotesService() : this.injectOnlineNotesService()
   }
 
-  async deleteNote(noteId: string) {
-    await deleteDoc(doc(this.notesCollection, noteId))
+  setMode(mode: 'offline' | 'online') {
+    if (mode === 'offline' && !this.canUseOfflineMode())
+      throw new Error(ErrorMessage.OFFLINE_MODE_NOT_SUPPORTED)
+    this.mode = mode
   }
 
-  async deleteAllUserNotes() {
-    const userNotes = await firstValueFrom(this.getUserNotes$(false))
-    for (const note of userNotes)
-      await this.deleteNote(note.id)
+  getUserNotes$(sortingMethod?: NotesSortingMethod): Observable<Note[]> {
+    return this.mode === 'offline' ?
+      this.offlineNotesService!.getNotes$(sortingMethod) :
+      this.onlineNotesService!.getUserNotes$(false, sortingMethod)
   }
 
-  async deleteUserFavouriteNotes() {
-    const userNotes = await firstValueFrom(this.getUserNotes$(true))
-    for (const note of userNotes.filter(note => note.isFavourite))
-      await this.deleteNote(note.id)
+  getUserFavouriteNotes$(sortingMethod: NotesSortingMethod) {
+    return this.mode === 'offline' ?
+      this.offlineNotesService!.getFavouriteNotes$(sortingMethod) :
+      this.onlineNotesService!.getUserNotes$(true, sortingMethod)
   }
 
-  async updateNote(noteId: string, note: Note) {
-    await updateDoc(doc(this.notesCollection, noteId), {
-      ...note,
-      lastUpdateTimestamp: new Date()
-    })
+  getUserNotesQuantity$(): Observable<number> {
+    return this.mode === 'offline' ?
+      this.offlineNotesService!.getNotesQuantity$() :
+      this.onlineNotesService!.getUserNotesQuantity$()
   }
 
-  async toggleNoteIsFavourite(note: Note) {
-    await updateDoc(doc(this.notesCollection, note.id), {
-      isFavourite: !note.isFavourite
-    })
+  getUserFavouriteNotesQuantity$(): Observable<number> {
+    return this.mode === 'offline' ?
+      this.offlineNotesService!.getFavouriteNotesQuantity$() :
+      this.onlineNotesService!.getUserNotesQuantity$(true)
+  }
+
+  getNoteById(noteId: string): Observable<Note | undefined> {
+    return this.mode === 'offline' ?
+      this.offlineNotesService!.getNoteById(noteId) :
+      this.onlineNotesService!.getNoteById(noteId)
   }
 }

@@ -26,14 +26,24 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 
-.scale-150 {
-  scale: 150%;
+/* Alerts customization */
+
+@mixin alert-button($color) {
+  color: var(--ion-color-#{$color}-contrast);
+  background-color: var(--ion-color-#{$color});
+  border-radius: 4px;
+  margin: 0 6px 6px 6px;
 }
 
-.scale-175 {
-  scale: 175%;
+.error-alert .alert-accept-button {
+  @include alert-button(primary);
 }
 
-.scale-200 {
-  scale: 200%;
+.delete-confirmation-alert .alert-cancel-button {
+  @include alert-button(primary);
 }
+
+.delete-confirmation-alert .alert-delete-button {
+  @include alert-button(danger);
+}
+

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Note} from "../../../../model/note.model";
-import {NotesService} from "../../../../services/notes/notes.service";
+import {OnlineNotesService} from "../../../../services/notes/online-notes.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -11,12 +11,12 @@ import {Router} from "@angular/router";
 export class NoteComponent  implements OnInit {
   @Input() note!: Note
 
-  constructor(private notesService: NotesService, private router: Router) { }
+  constructor(private notesService: OnlineNotesService, private router: Router) { }
 
   ngOnInit() {}
 
   async onEditNoteButtonClicked() {
-    await this.router.navigate(['note-editor', { noteId: this.note.id }])
+    await this.router.navigate(['note-editor', { noteId: this.note.id! }])
   }
 
 }

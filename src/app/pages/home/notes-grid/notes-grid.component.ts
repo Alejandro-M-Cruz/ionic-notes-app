@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Note, NotesSortingMethod} from "../../../model/note.model";
 import {Router} from "@angular/router";
-import {NotesService} from "../../../services/notes/notes.service";
+import {OnlineNotesService} from "../../../services/notes/online-notes.service";
 import {Observable} from "rxjs";
 import {AlertsService} from "../../../services/alerts/alerts.service";
 import {ErrorsService} from "../../../services/alerts/errors.service";
@@ -17,7 +17,7 @@ export class NotesGridComponent  implements OnInit {
   notesSortingMethod = NotesSortingMethod.DEFAULT
 
   constructor(
-    private notesService: NotesService,
+    private notesService: OnlineNotesService,
     private errorsService: ErrorsService,
     private alertsService: AlertsService,
     private router: Router
@@ -48,7 +48,11 @@ export class NotesGridComponent  implements OnInit {
     }
   }
 
-  get notesDeletionConfirmationMessage() {
+  private get notesDeletionConfirmationTitle() {
+    return this.showFavouritesOnly ? 'Deleting favourite notes' : 'Deleting all notes'
+  }
+
+  private get notesDeletionConfirmationMessage() {
     return this.showFavouritesOnly ?
       'Are you sure you want to delete all your favourite notes?' :
       'Are you sure you want to delete all your notes?'
@@ -56,6 +60,7 @@ export class NotesGridComponent  implements OnInit {
 
   async onNotesDeletionButtonClicked() {
     await this.alertsService.showDeleteConfirmationAlert(
+      this.notesDeletionConfirmationTitle,
       this.notesDeletionConfirmationMessage,
       this.onNotesDeletionConfirmationClosed.bind(this)
     )
