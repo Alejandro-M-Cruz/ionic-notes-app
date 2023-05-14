@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Note} from "../../../../model/note.model";
-import {OnlineNotesService} from "../../../../services/notes/online-notes.service";
+import {Note} from "../../../model/note.model";
+import {OnlineNotesService} from "../../../services/notes/online-notes.service";
 import {Router} from "@angular/router";
 
 @Component({

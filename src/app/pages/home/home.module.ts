@@ -6,8 +6,7 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
-import {NotesGridComponent} from "./notes-grid/notes-grid.component";
-import {NoteComponent} from "./notes-grid/note/note.component";
+import {NoteComponent} from "./note/note.component";
 import {
     NoteFavouriteButtonComponent
 } from "../../components/notes/note-favourite-button/note-favourite-button.component";
@@ -24,6 +23,6 @@ import {NoteDeletionButtonComponent} from "../../components/notes/note-deletion-
     NoteFavouriteButtonComponent,
     NoteDeletionButtonComponent
   ],
-  declarations: [HomePage, NotesGridComponent, NoteComponent]
+  declarations: [HomePage, NoteComponent]
 })
 export class HomePageModule {}

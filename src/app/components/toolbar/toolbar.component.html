@@ -4,7 +4,15 @@
       <ion-icon slot="icon-only" name="home" color="dark"></ion-icon>
     </ion-button>
   </ion-buttons>
-  <ion-title>{{title}}</ion-title>
+  <ion-title *ngIf="title">{{title}}</ion-title>
+  <ion-segment [formControl]="favouritesSelectorFormControl" *ngIf="showFavouritesSelector">
+    <ion-segment-button [value]="false">
+      All
+    </ion-segment-button>
+    <ion-segment-button [value]="true">
+      Favourites
+    </ion-segment-button>
+  </ion-segment>
   <ion-buttons slot="end" [collapse]="true">
     <ion-button routerLink="/profile">
       <ion-icon slot="icon-only" name="person" color="dark"></ion-icon>
