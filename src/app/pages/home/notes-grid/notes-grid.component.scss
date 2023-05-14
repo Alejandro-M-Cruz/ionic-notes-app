@@ -1,7 +1,11 @@
-div {
+ion-segment {
   position: fixed;
   width: 100%;
   z-index: 999;
+}
+
+ion-segment {
+  --background: var(--ion-toolbar-background);
 }
 
 ion-grid {
@@ -10,4 +14,8 @@ ion-grid {
 
 ion-fab {
   position: fixed;
+}
+
+ion-col:last-child {
+  margin-bottom: 248px;
 }

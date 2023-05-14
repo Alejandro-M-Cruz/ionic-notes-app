@@ -3,9 +3,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <app-toolbar title="Notes"></app-toolbar>
-  </ion-header>
 
   <ng-container *ngIf="currentUser$ | async; else unauthenticated">
     <app-notes-grid></app-notes-grid>

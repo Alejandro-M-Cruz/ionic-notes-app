@@ -10,39 +10,34 @@
   <ion-grid>
     <ion-row class="ion-justify-content-center">
       <ion-col size="12" size-md="10" size-lg="8" size-xl="6">
-        <ion-card>
-          <ion-card-header>
+          <ion-list lines="full">
             <ion-row class="ion-justify-content-center">
               <app-profile-photo-modifier [profilePhotoUrl]="user$.value?.photoUrl"></app-profile-photo-modifier>
             </ion-row>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-list lines="full">
-              <ion-item>
-                <ion-label><strong>Username:</strong></ion-label>{{user$.value?.username}}
-              </ion-item>
-              <ion-item>
-                <ion-label><strong>Email:</strong></ion-label>{{user$.value?.email}}
-              </ion-item>
-              <ion-item>
-                <ion-label><strong>Account creation:</strong></ion-label>
-                {{user$.value?.creationTimestamp | date: 'medium'}}
-              </ion-item>
-              <ion-item>
-                <ion-label><strong>Last log-in:</strong></ion-label>
-                {{user$.value?.lastSignInTimestamp | date: 'medium'}}
-              </ion-item>
-              <ion-item>
-                <ion-label><strong>Notes:</strong></ion-label>
-                <ion-badge class="ion-padding-horizontal">{{userNotesQuantity$ | async}}</ion-badge>
-              </ion-item>
-              <ion-item>
-                <ion-label><strong>Favourites:</strong></ion-label>
-                <ion-badge color="success" class="ion-padding-horizontal">
-                  {{userFavouriteNotesQuantity$ | async}}
-                </ion-badge>
-              </ion-item>
-            </ion-list>
+            <ion-item>
+              <ion-label><strong>Username:</strong></ion-label>{{user$.value?.username}}
+            </ion-item>
+            <ion-item>
+              <ion-label><strong>Email:</strong></ion-label>{{user$.value?.email}}
+            </ion-item>
+            <ion-item>
+              <ion-label><strong>Account creation:</strong></ion-label>
+              {{user$.value?.creationTimestamp | date: 'medium'}}
+            </ion-item>
+            <ion-item>
+              <ion-label><strong>Last log-in:</strong></ion-label>
+              {{user$.value?.lastSignInTimestamp | date: 'medium'}}
+            </ion-item>
+            <ion-item>
+              <ion-label><strong>Notes:</strong></ion-label>
+              <ion-badge class="ion-padding-horizontal">{{userNotesQuantity$ | async}}</ion-badge>
+            </ion-item>
+            <ion-item>
+              <ion-label><strong>Favourites:</strong></ion-label>
+              <ion-badge color="success" class="ion-padding-horizontal">
+                {{userFavouriteNotesQuantity$ | async}}
+              </ion-badge>
+            </ion-item>
             <ion-row class="ion-justify-content-around ion-margin-top">
               <ion-button color="danger" (click)="onDeleteAccountButtonClicked()">
                 Delete account
@@ -58,8 +53,7 @@
                 Log out
               </ion-button>
             </ion-row>
-          </ion-card-content>
-        </ion-card>
+          </ion-list>
       </ion-col>
     </ion-row>
   </ion-grid>
