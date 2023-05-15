@@ -7,12 +7,12 @@ import { IonicModule } from '@ionic/angular';
 import { NotesPageRoutingModule } from './notes-routing.module';
 
 import { NotesPage } from './notes.page';
-import {NoteComponent} from "./note/note.component";
 import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
 import {
   NoteFavouriteButtonComponent
 } from "../../components/notes/note-favourite-button/note-favourite-button.component";
 import {NoteDeletionButtonComponent} from "../../components/notes/note-deletion-button/note-deletion-button.component";
+import {NoteComponent} from "../../components/notes/note/note.component";
 
 @NgModule({
   imports: [
@@ -22,8 +22,9 @@ import {NoteDeletionButtonComponent} from "../../components/notes/note-deletion-
     NotesPageRoutingModule,
     ToolbarComponent,
     NoteFavouriteButtonComponent,
-    NoteDeletionButtonComponent
+    NoteDeletionButtonComponent,
+    NoteComponent
   ],
-    declarations: [NotesPage, NoteComponent]
+    declarations: [NotesPage]
 })
 export class NotesPageModule {}

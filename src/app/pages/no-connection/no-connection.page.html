@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Offline mode</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-label>
+          In offline mode, you can access your favourite notes, which are automatically saved when you are connected.
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col *ngFor="let note of favouriteNotes" size="12" size-sm="6" size-lg="4" size-xl="3">
+        <app-note [note]="note" [isEditable]="false"></app-note>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" [class.ion-margin]="!isNativePlatform">
+    <ion-fab-button
+      class="ion-margin-bottom"
+      color="tertiary"
+      (click)="changeNotesOrder()"
+      [disabled]="favouriteNotes.length < 2"
+    >
+      <ion-icon name="swap-vertical"></ion-icon>
+    </ion-fab-button></ion-fab>
+</ion-content>

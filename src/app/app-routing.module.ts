@@ -57,7 +57,11 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: 'home'
+  },  {
+    path: 'no-connection',
+    loadChildren: () => import('./pages/no-connection/no-connection.module').then( m => m.NoConnectionPageModule)
   },
+
 
 ];
 

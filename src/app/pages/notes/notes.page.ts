@@ -1,40 +1,54 @@
 import {Component} from '@angular/core';
-import {Observable} from "rxjs";
 import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../../services/user/user.service";
 import {NotesService} from "../../services/notes/notes.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {Router} from "@angular/router";
-import {Capacitor} from "@capacitor/core";
-import {ViewWillEnter} from "@ionic/angular";
+import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
+import {Subscription} from "rxjs";
+import {PlatformService} from "../../services/native-platform/platform.service";
 
 @Component({
   selector: 'app-notes',
   templateUrl: './notes.page.html',
   styleUrls: ['./notes.page.scss'],
 })
-export class NotesPage implements ViewWillEnter {
+export class NotesPage implements ViewWillEnter, ViewWillLeave {
   displayOption = NotesDisplayOption.DEFAULT
   notesSortingMethod = NotesSortingMethod.DEFAULT
-  userNotes$?: Observable<Note[]>
-  readonly isNativePlatform = Capacitor.isNativePlatform()
+  userNotes?: Note[]
+  private userNotesSubscription?: Subscription
+  readonly isNativePlatform = this.platformService.isNativePlatform()
 
   constructor(
     private userService: UserService,
     private notesService: NotesService,
     private alertsService: AlertsService,
+    private platformService: PlatformService,
     private router: Router
   ) {}
 
   ionViewWillEnter() {
-    this.userNotes$ = this.notesService.getUserNotes$(this.displayOption, this.notesSortingMethod)
+    this.subscribeToUserNotes()
+  }
+
+  ionViewWillLeave() {
+    this.userNotesSubscription?.unsubscribe()
+  }
+
+  private subscribeToUserNotes() {
+    this.userNotesSubscription?.unsubscribe()
+    this.userNotesSubscription = this.notesService.getUserNotes$(this.displayOption, this.notesSortingMethod)
+      .subscribe(userNotes => {
+        this.userNotes = userNotes
+      })
   }
 
   onDisplayOptionChanged(displayOption: NotesDisplayOption) {
     if (displayOption === this.displayOption)
       return
     this.displayOption = displayOption
-    this.userNotes$ = this.notesService.getUserNotes$(displayOption, this.notesSortingMethod)
+    this.subscribeToUserNotes()
   }
 
   async onAddNoteButtonClicked() {
@@ -73,10 +87,11 @@ export class NotesPage implements ViewWillEnter {
     )
   }
 
-  revertNotesOrder() {
+  changeNotesOrder() {
     this.notesSortingMethod = this.notesSortingMethod === NotesSortingMethod.LAST_UPDATED_FIRST ?
       NotesSortingMethod.LAST_UPDATED_LAST :
       NotesSortingMethod.LAST_UPDATED_FIRST
-    this.userNotes$ = this.notesService.getUserNotes$(this.displayOption, this.notesSortingMethod)
+    this.subscribeToUserNotes()
   }
+
 }
