@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Observable} from "rxjs";
 import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../../services/user/user.service";
-import {OnlineNotesService} from "../../services/notes/online-notes.service";
+import {NotesService} from "../../services/notes/notes.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {Router} from "@angular/router";
 import {Capacitor} from "@capacitor/core";
@@ -21,7 +21,7 @@ export class NotesPage implements ViewWillEnter {
 
   constructor(
     private userService: UserService,
-    private notesService: OnlineNotesService,
+    private notesService: NotesService,
     private alertsService: AlertsService,
     private router: Router
   ) {}

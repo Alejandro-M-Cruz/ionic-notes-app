@@ -13,8 +13,7 @@ export enum NotesSortingMethod {
 export class Note {
   static readonly TITLE_MAX_LENGTH = 1000
   static readonly CONTENT_MAX_LENGTH = 10000
-  id?: string
-  localId?: string
+  id!: string
   title!: string
   content!: string
   isFavourite!: boolean
@@ -22,3 +21,4 @@ export class Note {
   lastUpdateTimestamp!: Date
   userId!: string
 }
+

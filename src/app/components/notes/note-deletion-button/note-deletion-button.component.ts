@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {IonicModule} from "@ionic/angular";
 import {Note} from "../../../model/note.model";
-import {OnlineNotesService} from "../../../services/notes/online-notes.service";
+import {NotesService} from "../../../services/notes/notes.service";
 import {AlertsService} from "../../../services/alerts/alerts.service";
 
 @Component({
@@ -15,7 +15,7 @@ export class NoteDeletionButtonComponent implements OnInit {
   @Input() note!: Note
 
   constructor(
-    private notesService: OnlineNotesService,
+    private notesService: NotesService,
     private alertsService: AlertsService
   ) { }
 

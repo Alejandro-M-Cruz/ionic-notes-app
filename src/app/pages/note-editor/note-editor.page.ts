@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {OnlineNotesService} from "../../services/notes/online-notes.service";
+import {NotesService} from "../../services/notes/notes.service";
 import {FormBuilder, Validators} from "@angular/forms";
 import {Note} from "../../model/note.model";
 import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
@@ -26,7 +26,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private notesService: OnlineNotesService
+    private notesService: NotesService
   ) { }
 
   async ionViewWillEnter() {

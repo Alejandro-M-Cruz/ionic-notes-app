@@ -5,7 +5,7 @@ import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {AccountDeletionService} from "../../services/user/account-deletion.service";
-import {OnlineNotesService} from "../../services/notes/online-notes.service";
+import {NotesService} from "../../services/notes/notes.service";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {NotesDisplayOption} from "../../model/note.model";
@@ -31,7 +31,7 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private notesService: OnlineNotesService,
+    private notesService: NotesService,
     private alertsService: AlertsService,
     private accountDeletionService: AccountDeletionService,
     private profilePhotoService: ProfilePhotoService,

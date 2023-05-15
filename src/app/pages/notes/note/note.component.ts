@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Note} from "../../../model/note.model";
-import {OnlineNotesService} from "../../../services/notes/online-notes.service";
+import {NotesService} from "../../../services/notes/notes.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -12,7 +12,7 @@ export class NoteComponent  implements OnInit {
   @Input() note!: Note
   @Input() isEditable: boolean = true
 
-  constructor(private notesService: OnlineNotesService, private router: Router) { }
+  constructor(private notesService: NotesService, private router: Router) { }
 
   ngOnInit() {}
 

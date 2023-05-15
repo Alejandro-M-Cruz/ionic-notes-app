@@ -6,7 +6,7 @@ export enum ErrorMessage {
   USER_NOT_FOUND = 'There is no user with this email',
   WRONG_PASSWORD = 'The password is incorrect',
   REQUIRES_RECENT_LOGIN = 'You must have logged in recently to delete your account, please log in again',
-  OFFLINE_MODE_NOT_SUPPORTED = 'Offline mode is not supported on this platform',
+  ERROR_STORING_FAVOURITE_NOTES = 'Could not store favourite notes in the device',
   UNKNOWN = 'An error occurred, please try again later'
 }
 

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Note} from "../../../model/note.model";
-import {OnlineNotesService} from "../../../services/notes/online-notes.service";
+import {NotesService} from "../../../services/notes/notes.service";
 import {IonicModule} from "@ionic/angular";
 
 @Component({
@@ -15,7 +15,7 @@ import {IonicModule} from "@ionic/angular";
 export class NoteFavouriteButtonComponent  implements OnInit {
   @Input() note!: Note
 
-  constructor(private notesService: OnlineNotesService) { }
+  constructor(private notesService: NotesService) { }
 
   ngOnInit() {}
 
