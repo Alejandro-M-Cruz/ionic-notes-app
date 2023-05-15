@@ -16,7 +16,7 @@
       If you have not created an account yet, <a routerLink="/sign-up">SIGN UP HERE</a>
     </ion-label>
     <ion-row class="ion-justify-content-center">
-      <ion-button class="ion-margin-horizontal" type="reset" (click)="navigateToHome()" color="warning">
+      <ion-button class="ion-margin-horizontal" type="reset" (click)="onCancelButtonClicked()" color="warning">
         Cancel
       </ion-button>
       <ion-button class="ion-margin-horizontal" type="submit" [disabled]="signInForm.invalid">

@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
 })
 export class NoteComponent  implements OnInit {
   @Input() note!: Note
+  @Input() isEditable: boolean = true
 
   constructor(private notesService: OnlineNotesService, private router: Router) { }
 

@@ -31,7 +31,7 @@ export class SignInPage implements OnInit {
 
   ngOnInit() {}
 
-  async navigateToHome() {
+  async onCancelButtonClicked() {
     await this.router.navigate(['/home'])
   }
 
@@ -43,7 +43,7 @@ export class SignInPage implements OnInit {
   async onSubmit() {
     try {
       await this.signIn()
-      await this.navigateToHome()
+      await this.router.navigate(['/notes'])
     } catch (e: any) {
       await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
     }

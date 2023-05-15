@@ -6,12 +6,6 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import {ToolbarComponent} from "../../components/toolbar/toolbar.component";
-import {NoteComponent} from "./note/note.component";
-import {
-    NoteFavouriteButtonComponent
-} from "../../components/notes/note-favourite-button/note-favourite-button.component";
-import {NoteDeletionButtonComponent} from "../../components/notes/note-deletion-button/note-deletion-button.component";
-
 
 @NgModule({
   imports: [
@@ -20,9 +14,7 @@ import {NoteDeletionButtonComponent} from "../../components/notes/note-deletion-
     IonicModule,
     HomePageRoutingModule,
     ToolbarComponent,
-    NoteFavouriteButtonComponent,
-    NoteDeletionButtonComponent
   ],
-  declarations: [HomePage, NoteComponent]
+  declarations: [HomePage]
 })
 export class HomePageModule {}

@@ -45,7 +45,7 @@ export class SignUpPage implements OnInit {
 
   ngOnInit() {}
 
-  async navigateToHome() {
+  async onCancelButtonClicked() {
     await this.router.navigate(['/home'])
   }
 
@@ -58,7 +58,7 @@ export class SignUpPage implements OnInit {
     try {
       await this.signUp()
       await this.uploadUserProfilePhoto()
-      await this.navigateToHome()
+      await this.router.navigate(['/notes'])
     } catch (e: any) {
       await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
     }

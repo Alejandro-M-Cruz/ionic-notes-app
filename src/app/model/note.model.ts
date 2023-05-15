@@ -1,3 +1,9 @@
+export enum NotesDisplayOption {
+  ALL = 'all',
+  FAVOURITES = 'favourites',
+  DEFAULT = ALL
+}
+
 export enum NotesSortingMethod {
   LAST_UPDATED_FIRST,
   LAST_UPDATED_LAST,

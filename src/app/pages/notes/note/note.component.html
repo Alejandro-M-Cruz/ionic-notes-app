@@ -2,10 +2,10 @@
   <ion-card-header>
     <ion-card-subtitle>{{note.lastUpdateTimestamp | date: 'medium'}}</ion-card-subtitle>
   </ion-card-header>
-  <ion-card-content>
+  <ion-card-content class="ion-text-justify">
     <ion-card-title>{{note.title}}</ion-card-title>
   </ion-card-content>
-  <ion-row class="ion-justify-content-around">
+  <ion-row *ngIf="isEditable" class="ion-justify-content-around">
     <app-note-favourite-button [note]="note"></app-note-favourite-button>
     <app-note-deletion-button [note]="note"></app-note-deletion-button>
     <ion-button fill="clear" shape="round" (click)="onEditNoteButtonClicked()">

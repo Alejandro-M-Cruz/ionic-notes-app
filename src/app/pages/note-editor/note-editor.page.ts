@@ -60,7 +60,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   }
 
   async onCancelButtonClicked() {
-    await this.router.navigate(['/home'])
+    await this.router.navigate(['/notes'])
   }
 
   private async createNote() {
@@ -73,7 +73,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
 
   async onSubmit() {
     this.noteId ? await this.updateNote() : await this.createNote()
-    await this.router.navigate(['/home'])
+    await this.router.navigate(['/notes'])
   }
 
   private destroyNoteSubscription() {
@@ -83,7 +83,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
 
   private async onNoteDeleted() {
     this.destroyNoteSubscription()
-    await this.router.navigate(['/home'])
+    await this.router.navigate(['/notes'])
   }
 
   ionViewWillLeave() {

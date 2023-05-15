@@ -1,9 +1,19 @@
 import {Injectable} from '@angular/core';
 import {
-  addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, getDoc, orderBy, query, updateDoc, where
+  addDoc,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  docData,
+  Firestore,
+  orderBy,
+  query,
+  updateDoc,
+  where
 } from "@angular/fire/firestore";
 import {firstValueFrom, map, Observable} from "rxjs";
-import {Note, NotesSortingMethod} from "../../model/note.model";
+import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../user/user.service";
 
 @Injectable({
@@ -31,21 +41,33 @@ export class OnlineNotesService {
     )
   }
 
-  getUserNotes$(favouritesOnly: boolean = false, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
+  getUserNotes$(displayOption?: NotesDisplayOption, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
     const queryConstraints = [where('userId', '==', this.userService.currentUser!.uid)]
-    if (favouritesOnly)
-      queryConstraints.push(where('isFavourite', '==', true))
+    const displayOptionFilter = this.getDisplayOptionFilter(displayOption)
+    if (displayOptionFilter)
+      queryConstraints.push(displayOptionFilter)
     queryConstraints.push(this.getSortingFunction(sortingMethod))
     return collectionData(query(this.notesCollection, ...queryConstraints), {idField: 'id'})
       .pipe(map(notes => notes.map(this.firestoreDocDataToNote)))
   }
 
-  getUserNotesQuantity$(favouritesOnly: boolean = false): Observable<number> {
-    return this.getUserNotes$(favouritesOnly).pipe(map(userNotes => userNotes.length))
+  getUserNotesQuantity$(displayOption?: NotesDisplayOption): Observable<number> {
+    return this.getUserNotes$(displayOption).pipe(map(userNotes => userNotes.length))
+  }
+
+  private getDisplayOptionFilter(displayOption?: NotesDisplayOption): any {
+    switch (displayOption) {
+      case NotesDisplayOption.ALL:
+        return null
+      case NotesDisplayOption.FAVOURITES:
+        return where('isFavourite', '==', true)
+      default:
+        return this.getDisplayOptionFilter(NotesDisplayOption.DEFAULT)
+    }
   }
 
   private getSortingFunction(sortingMethod?: NotesSortingMethod): any {
-    switch(sortingMethod) {
+    switch (sortingMethod) {
       case NotesSortingMethod.LAST_UPDATED_FIRST:
         return orderBy('lastUpdateTimestamp', 'desc')
       case NotesSortingMethod.LAST_UPDATED_LAST:
@@ -71,15 +93,15 @@ export class OnlineNotesService {
     await deleteDoc(doc(this.notesCollection, noteId))
   }
 
-  async deleteAllUserNotes() {
-    const userNotes = await firstValueFrom(this.getUserNotes$(false))
-    for (const note of userNotes)
+  async deleteUserNotesExceptFavourites() {
+    const userNotes = await firstValueFrom(this.getUserNotes$(NotesDisplayOption.ALL))
+    for (const note of userNotes.filter(note => !note.isFavourite))
       await this.deleteNote(note.id!)
   }
 
   async deleteUserFavouriteNotes() {
-    const userNotes = await firstValueFrom(this.getUserNotes$(true))
-    for (const note of userNotes.filter(note => note.isFavourite))
+    const userNotes = await firstValueFrom(this.getUserNotes$(NotesDisplayOption.FAVOURITES))
+    for (const note of userNotes)
       await this.deleteNote(note.id!)
   }
 

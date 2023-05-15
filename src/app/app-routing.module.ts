@@ -2,19 +2,30 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import {AuthGuard, redirectLoggedInTo, redirectUnauthorizedTo} from "@angular/fire/auth-guard";
 
-const redirectUnauthenticatedUserToSignIn = () => redirectUnauthorizedTo(['/sign-in'])
+const redirectUnauthenticatedToSignIn = () => redirectUnauthorizedTo(['/sign-in'])
+const redirectUnauthenticatedToHome = () => redirectUnauthorizedTo(['/sign-in'])
 const redirectLoggedInToProfile = () => redirectLoggedInTo(['/profile'])
+const redirectLoggedInToNotes = () => redirectLoggedInTo(['/notes'])
 
 const routes: Routes = [
   {
-    title: 'Notes',
+    title: 'Home',
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
+    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+    canActivate: [AuthGuard],
+    data: { authGuardPipe: redirectLoggedInToNotes }
   },
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
+  },
+  {
+    title: 'Notes',
+    path: 'notes',
+    loadChildren: () => import('./pages/notes/notes.module').then( m => m.NotesPageModule),
+    canActivate: [AuthGuard],
+    data: { authGuardPipe: redirectUnauthenticatedToHome }
   },
   {
     title: 'Log in',
@@ -35,13 +46,13 @@ const routes: Routes = [
     path: 'profile',
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule),
     canActivate: [AuthGuard],
-    data: { authGuardPipe: redirectUnauthenticatedUserToSignIn }
+    data: { authGuardPipe: redirectUnauthenticatedToSignIn }
   },
   {
     path: 'note-editor',
     loadChildren: () => import('./pages/note-editor/note-editor.module').then( m => m.NoteEditorPageModule),
     canActivate: [AuthGuard],
-    data: { authGuardPipe: redirectUnauthenticatedUserToSignIn }
+    data: { authGuardPipe: redirectUnauthenticatedToSignIn }
   },
   {
     path: '**',

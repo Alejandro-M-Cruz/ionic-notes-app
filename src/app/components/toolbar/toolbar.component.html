@@ -5,11 +5,11 @@
     </ion-button>
   </ion-buttons>
   <ion-title *ngIf="title">{{title}}</ion-title>
-  <ion-segment [formControl]="favouritesSelectorFormControl" *ngIf="showFavouritesSelector">
-    <ion-segment-button [value]="false">
+  <ion-segment *ngIf="displayOption" [formControl]="displayOptionFormControl!">
+    <ion-segment-button value="all">
       All
     </ion-segment-button>
-    <ion-segment-button [value]="true">
+    <ion-segment-button value="favourites">
       Favourites
     </ion-segment-button>
   </ion-segment>

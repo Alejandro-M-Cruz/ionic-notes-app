@@ -12,7 +12,7 @@ export class AccountDeletionService {
   ) { }
 
   async deleteUserAccount() {
-    await this.onlineNotesService.deleteAllUserNotes()
+    await this.onlineNotesService.deleteUserNotesExceptFavourites()
     await deleteUser(this.auth.currentUser!)
   }
 

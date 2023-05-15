@@ -1,54 +1,15 @@
 <ion-header [translucent]="true">
-  <app-toolbar
-    [title]="(currentUser$ | async) ? undefined : 'Home'"
-    [showFavouritesSelector]="!!(currentUser$ | async)"
-    (favouritesSelectorChanged)="onShowFavouritesOnlyChanged($event)"
-  ></app-toolbar>
+  <app-toolbar title="Home"></app-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ng-container *ngIf="currentUser$ | async; else unauthenticated">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" size-sm="6" size-lg="4" size-xl="3" *ngFor="let note of userNotes$ | async">
-          <app-note [note]="note"></app-note>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button
-        class="ion-margin"
-        color="tertiary"
-        (click)="revertNotesOrder()"
-        [disabled]="((userNotes$ | async)?.length ?? 0) < 2"
-      >
-        <ion-icon name="swap-vertical"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button
-        color="danger"
-        [disabled]="!(userNotes$ | async)?.length"
-        class="ion-margin"
-        (click)="onNotesDeletionButtonClicked()"
-      >
-        <ion-icon name="trash"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button (click)="onAddNoteButtonClicked()" class="ion-margin">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-  </ng-container>
-
-  <ng-template #unauthenticated>
-    <div id="all-container">
-      <div id="message-container">
-        <p class="ion-text-wrap">Log in or create an account to access your notes</p>
-        <div id="buttons-container">
-          <ion-button routerLink="/sign-in">LOG IN</ion-button>
-          <ion-button routerLink="/sign-up" color="tertiary">SIGN UP</ion-button>
-        </div>
+  <div id="all-container">
+    <div id="message-container">
+      <p class="ion-text-wrap">Log in or create an account to access your notes</p>
+      <div id="buttons-container">
+        <ion-button routerLink="/sign-in">LOG IN</ion-button>
+        <ion-button routerLink="/sign-up" color="tertiary">SIGN UP</ion-button>
       </div>
     </div>
-  </ng-template>
-
+  </div>
 </ion-content>

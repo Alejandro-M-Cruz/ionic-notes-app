@@ -4,6 +4,7 @@ import {RouterModule} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {Subscription} from "rxjs";
+import {NotesDisplayOption} from "../../model/note.model";
 
 @Component({
   selector: 'app-toolbar',
@@ -19,24 +20,30 @@ import {Subscription} from "rxjs";
 })
 export class ToolbarComponent  implements OnInit, OnDestroy {
   @Input() title?: string
-  @Input() showFavouritesSelector: boolean = false
-  @Output() favouritesSelectorChanged = new EventEmitter<boolean>()
-  favouritesSelectorFormControl = new FormControl<boolean>(false, {nonNullable: true})
-  favouritesSelectorChangesSubscription?: Subscription
+  @Input() displayOption?: NotesDisplayOption
+  @Output() displayOptionChanged = new EventEmitter<NotesDisplayOption>()
+  displayOptionFormControl?: FormControl<NotesDisplayOption>
+  displayOptionChangesSubscription?: Subscription
 
   ngOnInit() {
-    this.subscribeToFavouritesSelectorChanges()
+    if (this.displayOption) {
+      this.initialiseDisplayOptionFormControl()
+      this.subscribeToDisplayOptionSelectorChanges()
+    }
   }
 
-  private subscribeToFavouritesSelectorChanges() {
-    this.favouritesSelectorChangesSubscription = this.favouritesSelectorFormControl.valueChanges
-      .subscribe(showFavouritesOnly => {
-        console.log('showFavouritesOnly', showFavouritesOnly)
-        this.favouritesSelectorChanged.emit(showFavouritesOnly)
+  private initialiseDisplayOptionFormControl() {
+    this.displayOptionFormControl = new FormControl(this.displayOption!, {nonNullable: true})
+  }
+
+  private subscribeToDisplayOptionSelectorChanges() {
+    this.displayOptionChangesSubscription = this.displayOptionFormControl!.valueChanges
+      .subscribe(displayOption => {
+        this.displayOptionChanged.emit(displayOption)
       })
   }
 
   ngOnDestroy() {
-    this.favouritesSelectorChangesSubscription?.unsubscribe()
+    this.displayOptionChangesSubscription?.unsubscribe()
   }
 }
