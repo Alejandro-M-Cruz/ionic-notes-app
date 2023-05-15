@@ -37,6 +37,10 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
     }
   }
 
+  ionViewWillLeave() {
+    this.destroyNoteSubscription()
+  }
+
   private getNoteIdFromRouteParams() {
     this.noteId = this.route.snapshot.paramMap.get('noteId')
   }
@@ -84,10 +88,6 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   private async onNoteDeleted() {
     this.destroyNoteSubscription()
     await this.router.navigate(['/notes'])
-  }
-
-  ionViewWillLeave() {
-    this.destroyNoteSubscription()
   }
 
 }

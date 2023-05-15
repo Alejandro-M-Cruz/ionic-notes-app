@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Observable} from "rxjs";
 import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../../services/user/user.service";
@@ -6,16 +6,17 @@ import {OnlineNotesService} from "../../services/notes/online-notes.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {Router} from "@angular/router";
 import {Capacitor} from "@capacitor/core";
+import {ViewWillEnter} from "@ionic/angular";
 
 @Component({
   selector: 'app-notes',
   templateUrl: './notes.page.html',
   styleUrls: ['./notes.page.scss'],
 })
-export class NotesPage implements OnInit {
+export class NotesPage implements ViewWillEnter {
   displayOption = NotesDisplayOption.DEFAULT
   notesSortingMethod = NotesSortingMethod.DEFAULT
-  userNotes$: Observable<Note[]> = this.notesService.getUserNotes$(this.displayOption, this.notesSortingMethod)
+  userNotes$?: Observable<Note[]>
   readonly isNativePlatform = Capacitor.isNativePlatform()
 
   constructor(
@@ -25,7 +26,9 @@ export class NotesPage implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {}
+  ionViewWillEnter() {
+    this.userNotes$ = this.notesService.getUserNotes$(this.displayOption, this.notesSortingMethod)
+  }
 
   onDisplayOptionChanged(displayOption: NotesDisplayOption) {
     if (displayOption === this.displayOption)

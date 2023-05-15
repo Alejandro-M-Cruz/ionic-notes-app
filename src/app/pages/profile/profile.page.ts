@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
 import {User} from "../../model/user.model";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
@@ -9,13 +9,14 @@ import {OnlineNotesService} from "../../services/notes/online-notes.service";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {NotesDisplayOption} from "../../model/note.model";
+import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit, OnDestroy {
+export class ProfilePage implements ViewWillEnter, ViewWillLeave {
   user$ = new BehaviorSubject<User | null>(null)
   private userSubscription?: Subscription
   userNotesQuantity$?: Observable<number>
@@ -37,12 +38,16 @@ export class ProfilePage implements OnInit, OnDestroy {
     private router: Router
   ) { }
 
-  ngOnInit() {
-    this.loadCurrentUser$()
+  ionViewWillEnter() {
+    this.loadCurrentUser()
     this.loadNotesQuantity()
   }
 
-  private loadCurrentUser$() {
+  ionViewWillLeave() {
+    this.destroySubscriptions()
+  }
+
+  private loadCurrentUser() {
     this.userSubscription = this.userService.currentUser$.subscribe(this.user$)
   }
 
@@ -51,7 +56,9 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.userFavouriteNotesQuantity$ = this.notesService.getUserNotesQuantity$(NotesDisplayOption.FAVOURITES)
   }
 
-  ngOnDestroy() {
+  private destroySubscriptions() {
+    this.userNotesQuantity$ = undefined
+    this.userFavouriteNotesQuantity$ = undefined
     this.userSubscription?.unsubscribe()
   }
 
@@ -104,5 +111,4 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.onProfilePhotoRemovalConfirmationClosed.bind(this)
     )
   }
-
 }
