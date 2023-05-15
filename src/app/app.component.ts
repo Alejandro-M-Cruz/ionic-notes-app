@@ -14,8 +14,6 @@ export class AppComponent implements OnInit, OnDestroy {
   favouriteNotesService?: FavouriteNotesService
   alertsService?: AlertsService
 
-  networkStatus?: boolean
-
   constructor(private platformService: PlatformService) {
     if (this.platformService.isNativePlatform())
       this.injectServices()
@@ -28,7 +26,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.networkStatus = await this.networkService?.isConnected()
     this.networkService?.listenToNetworkChanges()
   }
 
