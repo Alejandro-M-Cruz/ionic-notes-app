@@ -3,7 +3,6 @@ import {IonicModule} from "@ionic/angular";
 import {Note} from "../../../model/note.model";
 import {OnlineNotesService} from "../../../services/notes/online-notes.service";
 import {AlertsService} from "../../../services/alerts/alerts.service";
-import {ErrorsService} from "../../../services/alerts/errors.service";
 
 @Component({
   selector: 'app-note-deletion-button',
@@ -17,8 +16,7 @@ export class NoteDeletionButtonComponent implements OnInit {
 
   constructor(
     private notesService: OnlineNotesService,
-    private alertsService: AlertsService,
-    private errorsService: ErrorsService
+    private alertsService: AlertsService
   ) { }
 
   ngOnInit() {}
@@ -36,7 +34,7 @@ export class NoteDeletionButtonComponent implements OnInit {
       if (shouldDeleteNote)
         await this.notesService.deleteNote(this.note.id!)
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
+      await this.alertsService.showErrorAlert(e)
     }
   }
 

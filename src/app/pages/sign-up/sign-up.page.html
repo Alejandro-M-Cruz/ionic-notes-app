@@ -3,7 +3,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="ion-margin-bottom">
     <ion-grid>
       <ion-row class="ion-justify-content-center">
         <ion-col size="12" size-sm="8" size-md="6" size-lg="5" size-xl="4" class="inputs-col">
@@ -25,7 +25,7 @@
       If you already have an account, <a routerLink="/sign-in">LOG IN HERE</a>
     </ion-label>
     <ion-row class="ion-justify-content-center">
-      <ion-button class="ion-margin-horizontal" type="reset" (click)="onCancelButtonClicked()" color="warning">
+      <ion-button class="ion-margin-horizontal" type="reset" routerLink="/home" color="warning">
         Cancel
       </ion-button>
       <ion-button class="ion-margin-horizontal" type="submit" [disabled]="signUpForm.invalid" color="tertiary">

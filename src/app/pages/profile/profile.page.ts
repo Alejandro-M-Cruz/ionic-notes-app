@@ -8,7 +8,6 @@ import {AccountDeletionService} from "../../services/user/account-deletion.servi
 import {OnlineNotesService} from "../../services/notes/online-notes.service";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
-import {ErrorsService} from "../../services/alerts/errors.service";
 import {NotesDisplayOption} from "../../model/note.model";
 
 @Component({
@@ -33,7 +32,6 @@ export class ProfilePage implements OnInit, OnDestroy {
     private authService: AuthService,
     private notesService: OnlineNotesService,
     private alertsService: AlertsService,
-    private errorsService: ErrorsService,
     private accountDeletionService: AccountDeletionService,
     private profilePhotoService: ProfilePhotoService,
     private router: Router
@@ -62,7 +60,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       await this.authService.signOut()
       await this.router.navigate(['/home'])
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
+      await this.alertsService.showErrorAlert(e)
     }
   }
 
@@ -78,10 +76,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         await this.router.navigate(['/home'])
       }
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(
-        this.errorsService.identifyError(e),
-        this.onAccountDeletionErrorAlertClosed.bind(this)
-      )
+      await this.alertsService.showErrorAlert(e, this.onAccountDeletionErrorAlertClosed.bind(this))
     }
   }
 
@@ -98,7 +93,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       if (shouldRemoveProfilePhoto)
         await this.profilePhotoService.deleteUserProfilePhoto()
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
+      await this.alertsService.showErrorAlert(e)
     }
   }
 

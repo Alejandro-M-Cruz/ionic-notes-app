@@ -4,7 +4,6 @@ import {User} from "../../model/user.model";
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/user/auth.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
-import {ErrorsService} from "../../services/alerts/errors.service";
 
 @Component({
   selector: 'app-sign-in',
@@ -25,15 +24,10 @@ export class SignInPage implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private alertsService: AlertsService,
-    private errorsService: ErrorsService
+    private alertsService: AlertsService
   ) { }
 
   ngOnInit() {}
-
-  async onCancelButtonClicked() {
-    await this.router.navigate(['/home'])
-  }
 
   private async signIn() {
     const { email, password } = this.signInForm.value
@@ -45,7 +39,7 @@ export class SignInPage implements OnInit {
       await this.signIn()
       await this.router.navigate(['/notes'])
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
+      await this.alertsService.showErrorAlert(e)
     }
   }
 

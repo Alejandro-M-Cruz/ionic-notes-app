@@ -5,7 +5,6 @@ import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
-import {ErrorsService} from "../../services/alerts/errors.service";
 
 @Component({
   selector: 'app-sign-up',
@@ -39,15 +38,10 @@ export class SignUpPage implements OnInit {
     private authService: AuthService,
     private router: Router,
     private profilePhotoService: ProfilePhotoService,
-    private alertsService: AlertsService,
-    private errorsService: ErrorsService
+    private alertsService: AlertsService
   ) { }
 
   ngOnInit() {}
-
-  async onCancelButtonClicked() {
-    await this.router.navigate(['/home'])
-  }
 
   private async signUp() {
     const { email, password, username } = this.signUpForm.value
@@ -60,7 +54,7 @@ export class SignUpPage implements OnInit {
       await this.uploadUserProfilePhoto()
       await this.router.navigate(['/notes'])
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
+      await this.alertsService.showErrorAlert(e)
     }
   }
 

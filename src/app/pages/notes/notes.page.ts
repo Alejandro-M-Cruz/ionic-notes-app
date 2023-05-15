@@ -3,7 +3,6 @@ import {Observable} from "rxjs";
 import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../../services/user/user.service";
 import {OnlineNotesService} from "../../services/notes/online-notes.service";
-import {ErrorsService} from "../../services/alerts/errors.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {Router} from "@angular/router";
 import {Capacitor} from "@capacitor/core";
@@ -22,7 +21,6 @@ export class NotesPage implements OnInit {
   constructor(
     private userService: UserService,
     private notesService: OnlineNotesService,
-    private errorsService: ErrorsService,
     private alertsService: AlertsService,
     private router: Router
   ) {}
@@ -48,7 +46,7 @@ export class NotesPage implements OnInit {
           await this.notesService.deleteUserNotesExceptFavourites()
       }
     } catch (e: any) {
-      await this.alertsService.showErrorAlert(this.errorsService.identifyError(e))
+      await this.alertsService.showErrorAlert(e)
     }
   }
 
