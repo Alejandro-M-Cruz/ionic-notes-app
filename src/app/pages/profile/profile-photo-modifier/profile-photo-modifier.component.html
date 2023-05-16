@@ -1,16 +1,25 @@
-<app-profile-photo-input [control]="profilePhotoFormControl" [profilePhotoUrl]="profilePhotoUrl">
-</app-profile-photo-input>
+<form #profilePhotoForm>
+  <app-profile-photo-input [control]="profilePhotoFormControl" [profilePhotoUrl]="profilePhotoUrl">
+  </app-profile-photo-input>
+</form>
 <ng-container *ngIf="profilePhotoFileChanged$ | async">
-  <ion-grid>
-    <ion-row class="ion-justify-content-center">
-      <ion-button color="danger" (click)="onCancelButtonClicked()">Cancel</ion-button>
-    </ion-row>
-    <ion-row class="ion-justify-content-center">
-      <ion-button
-        color="success"
-        (click)="onConfirmButtonClicked()"
-        [disabled]="!profilePhotoFormControl.value"
-      >Confirm</ion-button>
-    </ion-row>
-  </ion-grid>
+  <ion-row class="ion-justify-content-center ion-margin-bottom">
+    <ion-button
+      fill="clear"
+      shape="round"
+      color="danger"
+      (click)="onCancelButtonClicked(profilePhotoForm)"
+    >
+      <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      color="success"
+      shape="round"
+      (click)="onConfirmButtonClicked()"
+      [disabled]="!profilePhotoFormControl.value"
+    >
+      <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+    </ion-button>
+  </ion-row>
 </ng-container>

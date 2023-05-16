@@ -3,13 +3,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div id="all-container">
-    <div id="message-container">
-      <p class="ion-text-wrap">Log in or create an account to access your notes</p>
-      <div id="buttons-container">
-        <ion-button routerLink="/sign-in">LOG IN</ion-button>
-        <ion-button routerLink="/sign-up" color="tertiary">SIGN UP</ion-button>
-      </div>
-    </div>
-  </div>
+  <ion-row class="ion-justify-content-center ion-margin">
+    <ion-label class="ion-text-wrap ion-text-center ion-margin">Log in or create an account to access your notes</ion-label>
+  </ion-row>
+  <ion-row class="ion-justify-content-center ion-margin">
+    <ion-button routerLink="/sign-in" class="ion-margin-end ion-margin-top">LOG IN</ion-button>
+    <ion-button routerLink="/sign-up" class="ion-margin-start ion-margin-top" color="tertiary">SIGN UP</ion-button>
+  </ion-row>
 </ion-content>

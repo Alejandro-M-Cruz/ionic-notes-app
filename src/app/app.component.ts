@@ -16,8 +16,8 @@ export class AppComponent implements OnInit, OnDestroy, ViewWillLeave {
   alertsService?: AlertsService
 
   constructor(private platformService: PlatformService) {
-    if (this.platformService.isNativePlatform())
-      this.injectServices()
+    /*if (this.platformService.isNativePlatform())
+      this.injectServices()*/
   }
 
   private injectServices() {
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, OnDestroy, ViewWillLeave {
 
   async ngOnInit() {
     console.log('app ngOnInit')
-    this.networkService?.listenToNetworkChanges()
+    await this.networkService?.listenToNetworkChanges()
   }
 
   async ngOnDestroy() {

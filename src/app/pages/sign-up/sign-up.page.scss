@@ -3,20 +3,19 @@ a {
   font-weight: bold;
 }
 
-.inputs-col {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 12px;
-
-  *:not(app-profile-photo-input) {
-    margin: 12px 0;
-    width: 100%;
-  }
-}
-
-ion-label {
-  display: block;
+form {
   width: 100%;
+
+  .inputs-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+
+    *:not(app-profile-photo-input) {
+      margin: 12px 0;
+      width: 100%;
+    }
+  }
 }

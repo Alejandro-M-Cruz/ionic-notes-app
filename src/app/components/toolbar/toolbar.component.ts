@@ -20,7 +20,6 @@ import {NotesDisplayOption} from "../../model/note.model";
 })
 export class ToolbarComponent  implements OnInit, OnDestroy {
   @Input() title?: string
-  @Input() showProgressBar?: boolean
   @Input() displayOption?: NotesDisplayOption
   @Output() displayOptionChanged = new EventEmitter<NotesDisplayOption>()
   displayOptionFormControl?: FormControl<NotesDisplayOption>

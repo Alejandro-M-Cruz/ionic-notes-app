@@ -2,7 +2,6 @@ import {Injectable, NgZone} from '@angular/core';
 import {Network} from "@capacitor/network";
 import {Router} from "@angular/router";
 import {PluginListenerHandle} from "@capacitor/core";
-import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,7 @@ export class NetworkService {
     return Network.getStatus().then(status => status.connected)
   }
 
-  listenToNetworkChanges() {
+  async listenToNetworkChanges() {
     this.networkListener = Network.addListener('networkStatusChange', async status => {
       if (status.connected === this.previousConnectionStatus)
         return
@@ -25,6 +24,8 @@ export class NetworkService {
         status.connected ? this.onConnectionRestored() : this.onConnectionLost()
       })
     })
+    if (!await this.isConnected())
+      await this.onConnectionLost()
   }
 
   private async onConnectionLost() {

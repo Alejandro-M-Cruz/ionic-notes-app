@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {ProfilePhotoService} from "../../../services/user/profile-photo.service";
 import {BehaviorSubject, map, Subscription} from "rxjs";
@@ -26,7 +26,8 @@ export class ProfilePhotoModifierComponent implements OnInit, OnDestroy {
       .subscribe(this.profilePhotoFileChanged$)
   }
 
-  onCancelButtonClicked() {
+  onCancelButtonClicked(profilePhotoForm: HTMLFormElement) {
+    profilePhotoForm!.reset()
     this.profilePhotoFileChanged$.next(false)
     this.profilePhotoFormControl.setValue(null)
   }

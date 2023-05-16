@@ -1,30 +1,8 @@
-ion-fab {
-  position: fixed;
-}
-
-ion-col:last-child {
-  margin-bottom: 248px;
-}
-
-#all-container {
+ion-content {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  text-align: center;
-
-  * {
-    margin: 1rem;
-  }
-}
-
-#message-container {
-  position: relative;
   top: 40%;
 
-  p {
-    font-size: 1.3rem;
-    font-weight: bold;
+  ion-label {
+    font-size: 24px;
   }
 }
