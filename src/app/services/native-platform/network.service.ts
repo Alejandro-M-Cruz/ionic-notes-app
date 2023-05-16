@@ -15,11 +15,12 @@ export class NetworkService {
     return Network.getStatus().then(status => status.connected)
   }
 
-  listenToNetworkChanges() {
+  async listenToNetworkChanges() {
     this.networkListener = Network.addListener('networkStatusChange', async status => {
-      console.log(status)
       status.connected ? await this.onConnectionRestored() : await this.onConnectionLost()
     })
+    if (!await this.isConnected())
+      await this.onConnectionLost()
   }
 
   private async onConnectionLost() {

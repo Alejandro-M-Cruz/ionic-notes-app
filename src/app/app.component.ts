@@ -26,7 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.networkService?.listenToNetworkChanges()
+    await this.networkService?.listenToNetworkChanges()
   }
 
   async ngOnDestroy() {
