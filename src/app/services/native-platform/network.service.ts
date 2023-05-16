@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {Network} from "@capacitor/network";
 import {Router} from "@angular/router";
 import {PluginListenerHandle} from "@capacitor/core";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NetworkService {
   private networkListener?: PluginListenerHandle
+  private previousConnectionStatus?: boolean
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private ngZone: NgZone) { }
 
   isConnected(): Promise<boolean> {
     return Network.getStatus().then(status => status.connected)
@@ -17,8 +19,11 @@ export class NetworkService {
 
   listenToNetworkChanges() {
     this.networkListener = Network.addListener('networkStatusChange', async status => {
-      console.log(status)
-      status.connected ? await this.onConnectionRestored() : await this.onConnectionLost()
+      if (status.connected === this.previousConnectionStatus)
+        return
+      this.ngZone.run(() => {
+        status.connected ? this.onConnectionRestored() : this.onConnectionLost()
+      })
     })
   }
 

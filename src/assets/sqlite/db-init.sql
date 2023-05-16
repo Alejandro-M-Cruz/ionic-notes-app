@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS favourite_notes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  last_updated_at INTEGER NOT NULL
+);

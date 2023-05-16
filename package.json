@@ -9,7 +9,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "ionic-samsung": "ionic cap run android -l --external --target R58TA1DJF9P --public-host=192.168.1.43"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
     "@awesome-cordova-plugins/sqlite": "^6.3.0",
+    "@awesome-cordova-plugins/sqlite-porter": "^6.3.0",
     "@capacitor/android": "5.0.1",
     "@capacitor/app": "5.0.1",
     "@capacitor/core": "5.0.1",
@@ -37,6 +39,7 @@
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "uk.co.workingedge.cordova.plugin.sqliteporter": "^1.1.1",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

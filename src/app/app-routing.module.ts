@@ -3,7 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import {AuthGuard, redirectLoggedInTo, redirectUnauthorizedTo} from "@angular/fire/auth-guard";
 
 const redirectUnauthenticatedToSignIn = () => redirectUnauthorizedTo(['/sign-in'])
-const redirectUnauthenticatedToHome = () => redirectUnauthorizedTo(['/sign-in'])
+const redirectUnauthenticatedToHome = () => redirectUnauthorizedTo(['/home'])
 const redirectLoggedInToProfile = () => redirectLoggedInTo(['/profile'])
 const redirectLoggedInToNotes = () => redirectLoggedInTo(['/notes'])
 
@@ -57,7 +57,8 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: 'home'
-  },  {
+  },
+  {
     path: 'no-connection',
     loadChildren: () => import('./pages/no-connection/no-connection.module').then( m => m.NoConnectionPageModule)
   },

@@ -3,13 +3,14 @@ import {FavouriteNotesService} from "./services/notes/favourite-notes.service";
 import {AlertsService, ErrorMessage} from "./services/alerts/alerts.service";
 import {NetworkService} from "./services/native-platform/network.service";
 import {PlatformService} from "./services/native-platform/platform.service";
+import {ViewWillLeave} from "@ionic/angular";
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, ViewWillLeave {
   networkService?: NetworkService
   favouriteNotesService?: FavouriteNotesService
   alertsService?: AlertsService
@@ -26,12 +27,18 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    console.log('app ngOnInit')
     this.networkService?.listenToNetworkChanges()
   }
 
   async ngOnDestroy() {
+    console.log('app ngOnDestroy')
     await this.storeFavouriteNotesLocally()
     await this.networkService?.removeNetworkChangesListener()
+  }
+
+  ionViewWillLeave() {
+    console.log('app ionViewWillLeave')
   }
 
   private async storeFavouriteNotesLocally() {
