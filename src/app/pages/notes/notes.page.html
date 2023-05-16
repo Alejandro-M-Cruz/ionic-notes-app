@@ -1,39 +1,40 @@
 <ion-header [translucent]="true">
   <app-toolbar
-    [showProgressBar]="!userNotes"
     [displayOption]="displayOption"
     (displayOptionChanged)="onDisplayOptionChanged($event)"
   ></app-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-title
-    *ngIf="userNotes?.length === 0; else notesGrid"
-    class="ion-text-center"
-  >
+<ion-content [fullscreen]="true" [ngSwitch]="userNotes?.length">
+  <ion-spinner *ngSwitchCase="undefined" name="lines" color="primary"></ion-spinner>
+  <ion-title *ngSwitchCase="0" class="ion-text-center">
     {{displayOption === 'all' ? 'No notes yet' : 'No favourite notes yet'}}
   </ion-title>
-  <ng-template #notesGrid>
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" size-sm="6" size-lg="4" size-xl="3" *ngFor="let note of userNotes">
-          <app-note [note]="note"></app-note>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ng-template>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" [class.ion-margin]="!isNativePlatform">
+  <ion-grid *ngSwitchDefault>
+    <ion-row>
+      <ion-col size="12" size-sm="6" size-lg="4" size-xl="3" *ngFor="let note of userNotes">
+        <app-note [note]="note"></app-note>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-fab
+    *ngIf="userNotes"
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    [class.ion-margin]="!isNativePlatform"
+  >
     <ion-fab-button
       class="ion-margin-bottom"
       color="tertiary"
       (click)="changeNotesOrder()"
-      [disabled]="(userNotes?.length ?? 0) < 2"
+      [disabled]="userNotes.length < 2"
     >
       <ion-icon name="swap-vertical"></ion-icon>
     </ion-fab-button>
     <ion-fab-button
       color="danger"
-      [disabled]="!userNotes?.length"
+      [disabled]="userNotes.length === 0"
       class="ion-margin-vertical"
       (click)="onNotesDeletionButtonClicked()"
     >
