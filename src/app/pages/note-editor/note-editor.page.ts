@@ -13,6 +13,7 @@ import {firstValueFrom, Subscription} from "rxjs";
 })
 export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   noteId: string | null = null
+  isFavourite?: boolean
   note?: Note
   noteSubscription?: Subscription
   readonly titleMaxLength = Note.TITLE_MAX_LENGTH
@@ -30,7 +31,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   ) { }
 
   async ionViewWillEnter() {
-    this.getNoteIdFromRouteParams()
+    this.getRouteParams()
     if (this.noteId) {
       this.loadNoteBeingEdited()
       await this.loadNoteFormInitialValue()
@@ -41,8 +42,9 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
     this.destroyNoteSubscription()
   }
 
-  private getNoteIdFromRouteParams() {
+  private getRouteParams() {
     this.noteId = this.route.snapshot.paramMap.get('noteId')
+    this.isFavourite = this.route.snapshot.paramMap.get('isFavourite') === 'true'
   }
 
   private loadNoteBeingEdited() {
@@ -68,7 +70,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   }
 
   private async createNote() {
-    await this.notesService.addNote(this.noteForm.value as Note)
+    await this.notesService.addNote({...this.noteForm.value, isFavourite: this.isFavourite} as Note)
   }
 
   private async updateNote() {

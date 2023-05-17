@@ -51,7 +51,9 @@ export class NotesPage implements ViewWillEnter, ViewWillLeave {
   }
 
   async onAddNoteButtonClicked() {
-    await this.router.navigate(['note-editor'])
+    await this.router.navigate(['/note-editor', {
+      isFavourite: this.displayOption === NotesFilteringOption.FAVOURITES
+    }])
   }
 
   async onNotesDeletionConfirmationClosed(shouldDeleteNotes: boolean) {

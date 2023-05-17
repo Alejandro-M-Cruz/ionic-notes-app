@@ -2,6 +2,7 @@ import {Injectable, NgZone} from '@angular/core';
 import {Network} from "@capacitor/network";
 import {Router} from "@angular/router";
 import {PluginListenerHandle} from "@capacitor/core";
+import {ToastsService} from "../alerts/toasts.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,22 +11,29 @@ export class NetworkService {
   private networkListener?: PluginListenerHandle
   private previousConnectionStatus?: boolean
 
-  constructor(private router: Router, private ngZone: NgZone) { }
+  constructor(private toastsService: ToastsService, private router: Router, private ngZone: NgZone) { }
 
   isConnected(): Promise<boolean> {
     return Network.getStatus().then(status => status.connected)
   }
 
   async listenToNetworkChanges() {
-    this.networkListener = Network.addListener('networkStatusChange', async status => {
-      if (status.connected === this.previousConnectionStatus)
-        return
-      this.ngZone.run(() => {
-        status.connected ? this.onConnectionRestored() : this.onConnectionLost()
-      })
+    this.networkListener = Network.addListener('networkStatusChange', status => {
+      this.onConnectionChangeEventFired(status.connected)
     })
     if (!await this.isConnected())
       await this.onConnectionLost()
+  }
+
+  private onConnectionChangeEventFired(isConnected: boolean) {
+    if (isConnected === this.previousConnectionStatus || this.previousConnectionStatus === undefined) {
+      this.previousConnectionStatus = isConnected
+      return
+    }
+    this.previousConnectionStatus = isConnected
+    this.ngZone.run(() => {
+      isConnected ? this.onConnectionRestored() : this.onConnectionLost()
+    })
   }
 
   private async onConnectionLost() {
@@ -34,6 +42,7 @@ export class NetworkService {
 
   private async onConnectionRestored() {
     await this.router.navigate(['/notes'])
+    await this.toastsService.showSuccessToast('Connection restored')
   }
 
   removeNetworkChangesListener() {

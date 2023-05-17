@@ -29,7 +29,7 @@ export class NoteComponent  implements OnInit {
   ngOnInit() {}
 
   async onEditNoteButtonClicked() {
-    await this.router.navigate(['note-editor', { noteId: this.note.id! }])
+    await this.router.navigate(['/note-editor', { noteId: this.note.id! }])
   }
 
 }

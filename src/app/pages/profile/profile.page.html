@@ -34,18 +34,19 @@
                 {{userFavouriteNotesQuantity$ | async}}
               </ion-badge>
             </ion-item>
-            <ion-row class="ion-justify-content-around ion-margin-top">
-              <ion-button color="danger" (click)="onDeleteAccountButtonClicked()">
+            <ion-row class="ion-justify-content-around">
+              <ion-button class="ion-margin-vertical" color="danger" (click)="onDeleteAccountButtonClicked()">
                 Delete account
               </ion-button>
               <ion-button
+                class="ion-margin-vertical"
                 color="warning"
                 (click)="onProfilePhotoRemovalButtonClicked()"
                 [disabled]="!user$.value?.photoUrl"
               >
                 Remove profile photo
               </ion-button>
-              <ion-button (click)="onSignOutButtonClicked()" color="tertiary">
+              <ion-button class="ion-margin-vertical"  (click)="onSignOutButtonClicked()" color="tertiary">
                 Log out
               </ion-button>
             </ion-row>
