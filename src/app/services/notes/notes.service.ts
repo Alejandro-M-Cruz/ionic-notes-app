@@ -1,36 +1,28 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {
-  addDoc,
-  collection,
-  collectionData,
-  deleteDoc,
-  doc,
-  docData,
-  Firestore,
-  orderBy,
-  query,
-  updateDoc,
-  where
+  addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, orderBy, query, updateDoc, where
 } from "@angular/fire/firestore";
 import {firstValueFrom, map, Observable} from "rxjs";
 import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../user/user.service";
-import {FavouriteNotesService} from "./favourite-notes.service";
+import {LocalNotesService} from "./local-notes.service";
+import {Capacitor} from "@capacitor/core";
+import {NetworkService} from "../network/network.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
   private notesCollection = collection(this.firestore, 'notes')
-  private favouriteNotesService?: FavouriteNotesService
+  private favouriteNotesService?: LocalNotesService
 
   constructor(
     private firestore: Firestore,
-    private userService: UserService
-  ) {}
-
-  setFavouriteNotesService(favouriteNotesService: FavouriteNotesService) {
-    this.favouriteNotesService = favouriteNotesService
+    private userService: UserService,
+    private networkService: NetworkService
+  ) {
+    if (Capacitor.isNativePlatform())
+      this.favouriteNotesService = inject(LocalNotesService)
   }
 
   private firestoreDocDataToNote = (docData: any): Note => {
@@ -95,7 +87,7 @@ export class NotesService {
       lastUpdateTimestamp: now,
       userId: this.userService.currentUser!.uid
     })
-    this.favouriteNotesService?.storeUserFavouriteNotes()
+    await this.storeFavouriteNotesLocally()
   }
 
   async deleteNote(noteId: string) {
@@ -108,7 +100,7 @@ export class NotesService {
     )
     for (const note of userNotesExceptFavourites)
       await this.deleteNote(note.id!)
-    this.favouriteNotesService?.storeUserFavouriteNotes()
+    await this.storeFavouriteNotesLocally()
   }
 
   async deleteUserFavouriteNotes() {
@@ -117,7 +109,7 @@ export class NotesService {
     )
     for (const note of userFavouriteNotes)
       await this.deleteNote(note.id!)
-    this.favouriteNotesService?.storeUserFavouriteNotes()
+    await this.storeFavouriteNotesLocally()
   }
 
   async updateNote(noteId: string, note: Note) {
@@ -125,13 +117,26 @@ export class NotesService {
       ...note,
       lastUpdateTimestamp: new Date()
     })
-    this.favouriteNotesService?.storeUserFavouriteNotes()
+    await this.storeFavouriteNotesLocally()
   }
 
   async toggleNoteIsFavourite(note: Note) {
     await updateDoc(doc(this.notesCollection, note.id!), {
       isFavourite: !note.isFavourite
     })
-    this.favouriteNotesService?.storeUserFavouriteNotes()
+    await this.storeFavouriteNotesLocally()
+  }
+
+  private async storeFavouriteNotesLocally() {
+    this.favouriteNotesService?.storeNotes(
+      await firstValueFrom(this.getUserNotes$(NotesFilteringOption.FAVOURITES))
+    )
+  }
+
+  storeFavouriteNotesLocallyWhenUserChanges() {
+    this.userService.currentUser$.subscribe(async user => {
+      if (user && await this.networkService.isConnected())
+        await this.storeFavouriteNotesLocally()
+    })
   }
 }

@@ -1,7 +1,7 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {NetworkService} from "./services/native-platform/network.service";
-import {FavouriteNotesServiceInjectorService} from "./services/native-platform/favourite-notes-service-injector.service";
+import {NetworkService} from "./services/network/network.service";
 import {Capacitor} from "@capacitor/core";
+import {NotesService} from "./services/notes/notes.service";
 
 @Component({
   selector: 'app-root',
@@ -10,19 +10,21 @@ import {Capacitor} from "@capacitor/core";
 })
 export class AppComponent implements OnInit, OnDestroy {
   networkService?: NetworkService
+  notesService?: NotesService
 
-  constructor(private notesSyncService: FavouriteNotesServiceInjectorService) {
+  constructor() {
     if (Capacitor.isNativePlatform())
       this.injectServices()
   }
 
   private injectServices() {
     this.networkService = inject(NetworkService)
-    this.notesSyncService.injectFavouriteNotesServiceIntoNotesService()
+    this.notesService = inject(NotesService)
   }
 
   async ngOnInit() {
     await this.networkService?.listenToNetworkChanges()
+    await this.notesService?.storeFavouriteNotesLocallyWhenUserChanges()
   }
 
   async ngOnDestroy() {

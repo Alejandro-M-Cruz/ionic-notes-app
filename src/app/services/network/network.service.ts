@@ -22,7 +22,7 @@ export class NetworkService {
       this.onConnectionChangeEventFired(status.connected)
     })
     if (!await this.isConnected())
-      await this.onConnectionLost()
+      await this.onAppStartedWithNoConnection()
   }
 
   private onConnectionChangeEventFired(isConnected: boolean) {
@@ -36,8 +36,13 @@ export class NetworkService {
     })
   }
 
+  private async onAppStartedWithNoConnection() {
+    await this.router.navigate(['/no-connection'])
+  }
+
   private async onConnectionLost() {
     await this.router.navigate(['/no-connection'])
+    await this.toastsService.showErrorToast('Connection lost')
   }
 
   private async onConnectionRestored() {

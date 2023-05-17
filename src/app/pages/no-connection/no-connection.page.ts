@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Note, NotesSortingMethod} from "../../model/note.model";
-import {FavouriteNotesService} from "../../services/notes/favourite-notes.service";
+import {LocalNotesService} from "../../services/notes/local-notes.service";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -13,14 +13,14 @@ export class NoConnectionPage implements OnInit, OnDestroy {
   favouriteNotes?: Note[]
   favouriteNotesSubscription?: Subscription
 
-  constructor(private favouriteNotesService: FavouriteNotesService) { }
+  constructor(private favouriteNotesService: LocalNotesService) { }
 
   ngOnInit() {
     this.loadFavouriteNotes()
   }
 
   private loadFavouriteNotes() {
-    this.favouriteNotesSubscription = this.favouriteNotesService.getFavouriteNotes$(this.notesSortingMethod)
+    this.favouriteNotesSubscription = this.favouriteNotesService.getNotes$(this.notesSortingMethod)
       .subscribe(favouriteNotes => {
         this.favouriteNotes = favouriteNotes
       })
