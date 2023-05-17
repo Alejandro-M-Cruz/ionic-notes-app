@@ -25,11 +25,9 @@ export class NetworkService {
       await this.onAppStartedWithNoConnection()
   }
 
-  private onConnectionChangeEventFired(isConnected: boolean) {
-    if (isConnected === this.previousConnectionStatus || this.previousConnectionStatus === undefined) {
-      this.previousConnectionStatus = isConnected
+  private async onConnectionChangeEventFired(isConnected: boolean) {
+    if (isConnected === this.previousConnectionStatus)
       return
-    }
     this.previousConnectionStatus = isConnected
     this.ngZone.run(() => {
       isConnected ? this.onConnectionRestored() : this.onConnectionLost()

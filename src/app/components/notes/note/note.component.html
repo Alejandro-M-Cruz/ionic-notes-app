@@ -5,12 +5,17 @@
   <ion-card-content class="ion-text-justify">
     <ion-card-title>{{note.title}}</ion-card-title>
   </ion-card-content>
-  <ion-row *ngIf="isEditable" class="ion-justify-content-around">
+  <ion-row *ngIf="isEditable; else readonlyNoteOptions" class="ion-justify-content-around">
     <app-note-favourite-button [note]="note"></app-note-favourite-button>
     <app-note-deletion-button [note]="note"></app-note-deletion-button>
     <ion-button fill="clear" shape="round" (click)="onEditNoteButtonClicked()">
       <ion-icon slot="icon-only" name="create-outline"></ion-icon>
     </ion-button>
   </ion-row>
+  <ng-template #readonlyNoteOptions class="ion-justify-content-around">
+    <ion-button fill="clear" shape="round">
+      <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+    </ion-button>
+  </ng-template>
 </ion-card>
 
