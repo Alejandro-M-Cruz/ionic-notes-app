@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
-import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
+import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../../services/user/user.service";
 import {NotesService} from "../../services/notes/notes.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {Router} from "@angular/router";
 import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 import {Subscription} from "rxjs";
-import {PlatformService} from "../../services/native-platform/platform.service";
+import {Capacitor} from "@capacitor/core";
 
 @Component({
   selector: 'app-notes',
@@ -14,17 +14,16 @@ import {PlatformService} from "../../services/native-platform/platform.service";
   styleUrls: ['./notes.page.scss'],
 })
 export class NotesPage implements ViewWillEnter, ViewWillLeave {
-  displayOption = NotesDisplayOption.DEFAULT
+  displayOption = NotesFilteringOption.DEFAULT
   notesSortingMethod = NotesSortingMethod.DEFAULT
   userNotes?: Note[]
   private userNotesSubscription?: Subscription
-  readonly isNativePlatform = this.platformService.isNativePlatform()
+  readonly isNativePlatform = Capacitor.isNativePlatform()
 
   constructor(
     private userService: UserService,
     private notesService: NotesService,
     private alertsService: AlertsService,
-    private platformService: PlatformService,
     private router: Router
   ) {}
 
@@ -44,7 +43,7 @@ export class NotesPage implements ViewWillEnter, ViewWillLeave {
       })
   }
 
-  onDisplayOptionChanged(displayOption: NotesDisplayOption) {
+  onDisplayOptionChanged(displayOption: NotesFilteringOption) {
     if (displayOption === this.displayOption)
       return
     this.displayOption = displayOption
@@ -58,7 +57,7 @@ export class NotesPage implements ViewWillEnter, ViewWillLeave {
   async onNotesDeletionConfirmationClosed(shouldDeleteNotes: boolean) {
     try {
       if (shouldDeleteNotes) {
-        this.displayOption === NotesDisplayOption.FAVOURITES ?
+        this.displayOption === NotesFilteringOption.FAVOURITES ?
           await this.notesService.deleteUserFavouriteNotes() :
           await this.notesService.deleteUserNotesExceptFavourites()
       }
@@ -68,13 +67,13 @@ export class NotesPage implements ViewWillEnter, ViewWillLeave {
   }
 
   private get notesDeletionConfirmationTitle() {
-    return this.displayOption === NotesDisplayOption.FAVOURITES ?
+    return this.displayOption === NotesFilteringOption.FAVOURITES ?
       'Deleting all favourite notes' :
       'Deleting all notes except favourites'
   }
 
   private get notesDeletionConfirmationMessage() {
-    return this.displayOption === NotesDisplayOption.FAVOURITES ?
+    return this.displayOption === NotesFilteringOption.FAVOURITES ?
       'Are you sure you want to delete all your favourite notes?' :
       'Are you sure you want to delete all your notes except favourites?'
   }

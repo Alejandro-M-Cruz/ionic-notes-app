@@ -5,22 +5,24 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-label>
-          In offline mode, you can access your favourite notes, which are automatically saved when you are connected.
-        </ion-label>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col *ngFor="let note of favouriteNotes" size="12" size-sm="6" size-lg="4" size-xl="3">
-        <app-note [note]="note" [isEditable]="false"></app-note>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-row class="ion-justify-content-center ion-margin">
+    <ion-label class="ion-text-center no-connection-label">
+      It looks like your device has lost connection
+    </ion-label>
+  </ion-row>
+  <ion-row class="ion-justify-content-center ion-margin">
+    <ion-text>
+      In offline mode, you can access your favourite notes, which are automatically saved when you are connected.
+    </ion-text>
+  </ion-row>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" [class.ion-margin]="!isNativePlatform">
+  <app-notes-grid
+    [notes]="favouriteNotes"
+    displayOption="favourites"
+    [notesAreEditable]="false"
+  ></app-notes-grid>
+
+  <ion-fab *ngIf="favouriteNotes" vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button
       class="ion-margin-bottom"
       color="tertiary"
@@ -28,5 +30,6 @@
       [disabled]="favouriteNotes.length < 2"
     >
       <ion-icon name="swap-vertical"></ion-icon>
-    </ion-fab-button></ion-fab>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

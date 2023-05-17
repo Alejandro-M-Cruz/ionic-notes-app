@@ -1,6 +1,7 @@
-export enum NotesDisplayOption {
+export enum NotesFilteringOption {
   ALL = 'all',
   FAVOURITES = 'favourites',
+  EXCEPT_FAVOURITES = 'except_favourites',
   DEFAULT = ALL
 }
 

@@ -13,6 +13,7 @@ import {
 } from "../../components/notes/note-favourite-button/note-favourite-button.component";
 import {NoteDeletionButtonComponent} from "../../components/notes/note-deletion-button/note-deletion-button.component";
 import {NoteComponent} from "../../components/notes/note/note.component";
+import {NotesGridComponent} from "../../components/notes/notes-grid/notes-grid.component";
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import {NoteComponent} from "../../components/notes/note/note.component";
     ToolbarComponent,
     NoteFavouriteButtonComponent,
     NoteDeletionButtonComponent,
-    NoteComponent
+    NoteComponent,
+    NotesGridComponent
   ],
     declarations: [NotesPage]
 })

@@ -23,46 +23,45 @@ const routes: Routes = [
   {
     title: 'Notes',
     path: 'notes',
-    loadChildren: () => import('./pages/notes/notes.module').then( m => m.NotesPageModule),
+    loadChildren: () => import('./pages/notes/notes.module').then(m => m.NotesPageModule),
     canActivate: [AuthGuard],
     data: { authGuardPipe: redirectUnauthenticatedToHome }
   },
   {
     title: 'Log in',
     path: 'sign-in',
-    loadChildren: () => import('./pages/sign-in/sign-in.module').then( m => m.SignInPageModule),
+    loadChildren: () => import('./pages/sign-in/sign-in.module').then(m => m.SignInPageModule),
     canActivate: [AuthGuard],
     data: { authGuardPipe: redirectLoggedInToProfile }
   },
   {
     title: 'Sign up',
     path: 'sign-up',
-    loadChildren: () => import('./pages/sign-up/sign-up.module').then( m => m.SignUpPageModule),
+    loadChildren: () => import('./pages/sign-up/sign-up.module').then(m => m.SignUpPageModule),
     canActivate: [AuthGuard],
     data: { authGuardPipe: redirectLoggedInToProfile }
   },
   {
     title: 'Profile',
     path: 'profile',
-    loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule),
+    loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule),
     canActivate: [AuthGuard],
     data: { authGuardPipe: redirectUnauthenticatedToSignIn }
   },
   {
     path: 'note-editor',
-    loadChildren: () => import('./pages/note-editor/note-editor.module').then( m => m.NoteEditorPageModule),
+    loadChildren: () => import('./pages/note-editor/note-editor.module').then(m => m.NoteEditorPageModule),
     canActivate: [AuthGuard],
     data: { authGuardPipe: redirectUnauthenticatedToSignIn }
+  },
+  {
+    path: 'no-connection',
+    loadChildren: () => import('./pages/no-connection/no-connection.module').then(m => m.NoConnectionPageModule)
   },
   {
     path: '**',
     redirectTo: 'home'
   },
-  {
-    path: 'no-connection',
-    loadChildren: () => import('./pages/no-connection/no-connection.module').then( m => m.NoConnectionPageModule)
-  },
-
 
 ];
 

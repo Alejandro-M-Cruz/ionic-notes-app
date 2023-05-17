@@ -6,17 +6,8 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" [ngSwitch]="userNotes?.length">
-  <ion-spinner *ngSwitchCase="undefined" name="lines" color="primary"></ion-spinner>
-  <ion-title *ngSwitchCase="0" class="ion-text-center">
-    {{displayOption === 'all' ? 'No notes yet' : 'No favourite notes yet'}}
-  </ion-title>
-  <ion-grid *ngSwitchDefault>
-    <ion-row>
-      <ion-col size="12" size-sm="6" size-lg="4" size-xl="3" *ngFor="let note of userNotes">
-        <app-note [note]="note"></app-note>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <app-notes-grid [notes]="userNotes" [notesAreEditable]="true" [displayOption]="displayOption"></app-notes-grid>
+
   <ion-fab
     *ngIf="userNotes"
     vertical="bottom"

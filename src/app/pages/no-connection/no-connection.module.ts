@@ -8,6 +8,7 @@ import { NoConnectionPageRoutingModule } from './no-connection-routing.module';
 
 import { NoConnectionPage } from './no-connection.page';
 import {NoteComponent} from "../../components/notes/note/note.component";
+import {NotesGridComponent} from "../../components/notes/notes-grid/notes-grid.component";
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import {NoteComponent} from "../../components/notes/note/note.component";
         FormsModule,
         IonicModule,
         NoConnectionPageRoutingModule,
-        NoteComponent
+        NoteComponent,
+        NotesGridComponent
     ],
   declarations: [NoConnectionPage]
 })

@@ -10,7 +10,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "ionic-samsung": "ionic cap run android -l --external --target R58TA1DJF9P --public-host=192.168.1.43"
+    "ionic-samsung": "ionic cap run android -l --external --target R58TA1DJF9P --public-host=192.168.1.43",
+    "samsung-noreload": "ionic cap run android --target R58TA1DJF9P"
   },
   "private": true,
   "dependencies": {

@@ -8,7 +8,7 @@ import {AccountDeletionService} from "../../services/user/account-deletion.servi
 import {NotesService} from "../../services/notes/notes.service";
 import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
-import {NotesDisplayOption} from "../../model/note.model";
+import {NotesFilteringOption} from "../../model/note.model";
 import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 
 @Component({
@@ -52,8 +52,8 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
   }
 
   private loadNotesQuantity() {
-    this.userNotesQuantity$ = this.notesService.getUserNotesQuantity$(NotesDisplayOption.ALL)
-    this.userFavouriteNotesQuantity$ = this.notesService.getUserNotesQuantity$(NotesDisplayOption.FAVOURITES)
+    this.userNotesQuantity$ = this.notesService.getUserNotesQuantity$(NotesFilteringOption.ALL)
+    this.userFavouriteNotesQuantity$ = this.notesService.getUserNotesQuantity$(NotesFilteringOption.FAVOURITES)
   }
 
   private destroySubscriptions() {

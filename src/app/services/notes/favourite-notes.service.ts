@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {SQLite, SQLiteObject} from "@awesome-cordova-plugins/sqlite/ngx";
-import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
+import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {NotesService} from "./notes.service";
-import {BehaviorSubject, firstValueFrom, Observable} from "rxjs";
+import {BehaviorSubject, firstValueFrom, map, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {SQLitePorter} from "@awesome-cordova-plugins/sqlite-porter/ngx";
 import {Platform} from "@ionic/angular";
@@ -12,8 +12,7 @@ import {Platform} from "@ionic/angular";
 })
 export class FavouriteNotesService {
   private db?: SQLiteObject
-  private isDbReady = new BehaviorSubject<boolean>(false)
-  private favouriteNotes = new BehaviorSubject<Note[]>([])
+  private favouriteNotes$ = new BehaviorSubject<Note[]>([])
 
   constructor(
     private notesService: NotesService,
@@ -26,33 +25,35 @@ export class FavouriteNotesService {
   }
 
   private initDb() {
-    this.platform.ready().then(() => {
-      this.sqlite.create({
+    if (this.db)
+      return
+    return this.platform.ready().then(() => {
+      return this.sqlite.create({
         name: 'notes.db',
         location: 'default'
-      }).then((db: SQLiteObject) => {
-        this.db = db
-        this.createFavouriteNotesTable()
       })
+    }).then((db: SQLiteObject) => {
+      return this.createFavouriteNotesTable(db)
     })
   }
 
-  private createFavouriteNotesTable() {
-    this.httpClient.get('/assets/sqlite/db-init.sql', {responseType: "text"}).subscribe(async sql => {
-      await this.sqlitePorter.importSqlToDb(this.db, sql)
-      await this.loadFavouriteNotes()
-      this.isDbReady.next(true)
-    })
+  private async createFavouriteNotesTable(db: SQLiteObject) {
+    const sql = await firstValueFrom(
+      this.httpClient.get('/assets/sqlite/db-init.sql', {responseType: "text"})
+    )
+    await this.sqlitePorter.importSqlToDb(db, sql)
+    this.db = db
+    await this.loadFavouriteNotes()
   }
 
   private async loadFavouriteNotes() {
-    const result = await this.db!.executeSql('SELECT * FROM favourite_notes;')
+    const result = await this.db!.executeSql('SELECT * FROM favourite_notes;', [])
     const notes: Note[] = []
     if (result.rows.length) {
       for (let i = 0; i < result.rows.length; i++)
         notes.push(this.sqliteRowToNote(result.rows.item(i)))
     }
-    this.favouriteNotes.next(notes)
+    this.favouriteNotes$.next(notes)
   }
 
   private noteToSqliteRow(note: Note): any[] {
@@ -73,19 +74,21 @@ export class FavouriteNotesService {
     } as Note
   }
 
-  isStorageReady(): Observable<boolean> {
-    return this.isDbReady
-  }
-
-  getFavouriteNotes(sortingMethod?: NotesSortingMethod): Note[] {
-    return this.favouriteNotes.value.sort(this.getSortingFunction(sortingMethod))
+  getFavouriteNotes$(sortingMethod?: NotesSortingMethod): Observable<Note[]> {
+    return this.favouriteNotes$.pipe(
+      map(favouriteNotes => favouriteNotes.sort(this.getSortingFunction(sortingMethod)))
+    )
   }
 
   private async deleteAllStoredNotes() {
-    await this.db!.executeSql('DELETE FROM favourite_notes;')
+    await this.initDb()
+    await this.db!.executeSql('DELETE FROM favourite_notes;', [])
   }
 
   private async addNotes(notes: Note[]) {
+    if (notes.length === 0)
+      return
+    await this.initDb()
     const sql = 'INSERT INTO favourite_notes (title, content, created_at, last_updated_at) VALUES' +
       notes.map(note => ' (?, ?, ?, ?)')
     await this.db!.executeSql(sql, notes.flatMap(this.noteToSqliteRow))
@@ -94,9 +97,10 @@ export class FavouriteNotesService {
   async storeUserFavouriteNotes() {
     await this.deleteAllStoredNotes()
     const userFavouriteNotes = await firstValueFrom(
-      this.notesService.getUserNotes$(NotesDisplayOption.FAVOURITES)
+      this.notesService.getUserNotes$(NotesFilteringOption.FAVOURITES)
     )
     await this.addNotes(userFavouriteNotes)
+    await this.loadFavouriteNotes()
   }
 
   private getSortingFunction(sortingMethod?: NotesSortingMethod): any {

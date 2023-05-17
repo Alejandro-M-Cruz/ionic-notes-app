@@ -4,7 +4,7 @@ import {RouterModule} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {Subscription} from "rxjs";
-import {NotesDisplayOption} from "../../model/note.model";
+import {NotesFilteringOption} from "../../model/note.model";
 
 @Component({
   selector: 'app-toolbar',
@@ -20,9 +20,9 @@ import {NotesDisplayOption} from "../../model/note.model";
 })
 export class ToolbarComponent  implements OnInit, OnDestroy {
   @Input() title?: string
-  @Input() displayOption?: NotesDisplayOption
-  @Output() displayOptionChanged = new EventEmitter<NotesDisplayOption>()
-  displayOptionFormControl?: FormControl<NotesDisplayOption>
+  @Input() displayOption?: NotesFilteringOption
+  @Output() displayOptionChanged = new EventEmitter<NotesFilteringOption>()
+  displayOptionFormControl?: FormControl<NotesFilteringOption>
   displayOptionChangesSubscription?: Subscription
 
   ngOnInit() {

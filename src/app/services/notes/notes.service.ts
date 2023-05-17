@@ -13,19 +13,25 @@ import {
   where
 } from "@angular/fire/firestore";
 import {firstValueFrom, map, Observable} from "rxjs";
-import {Note, NotesDisplayOption, NotesSortingMethod} from "../../model/note.model";
+import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../user/user.service";
+import {FavouriteNotesService} from "./favourite-notes.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotesService {
   private notesCollection = collection(this.firestore, 'notes')
+  private favouriteNotesService?: FavouriteNotesService
 
   constructor(
     private firestore: Firestore,
     private userService: UserService
   ) {}
+
+  setFavouriteNotesService(favouriteNotesService: FavouriteNotesService) {
+    this.favouriteNotesService = favouriteNotesService
+  }
 
   private firestoreDocDataToNote = (docData: any): Note => {
     return {
@@ -41,9 +47,9 @@ export class NotesService {
     )
   }
 
-  getUserNotes$(displayOption?: NotesDisplayOption, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
+  getUserNotes$(displayOption?: NotesFilteringOption, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
     const queryConstraints = [where('userId', '==', this.userService.currentUser!.uid)]
-    const displayOptionFilter = this.getDisplayOptionFilter(displayOption)
+    const displayOptionFilter = this.getQueryConstraints(displayOption)
     if (displayOptionFilter)
       queryConstraints.push(displayOptionFilter)
     queryConstraints.push(this.getSortingFunction(sortingMethod))
@@ -51,18 +57,20 @@ export class NotesService {
       .pipe(map(notes => notes.map(this.firestoreDocDataToNote)))
   }
 
-  getUserNotesQuantity$(displayOption?: NotesDisplayOption): Observable<number> {
+  getUserNotesQuantity$(displayOption?: NotesFilteringOption): Observable<number> {
     return this.getUserNotes$(displayOption).pipe(map(userNotes => userNotes.length))
   }
 
-  private getDisplayOptionFilter(displayOption?: NotesDisplayOption): any {
-    switch (displayOption) {
-      case NotesDisplayOption.ALL:
+  private getQueryConstraints(filteringOption?: NotesFilteringOption): any {
+    switch (filteringOption) {
+      case NotesFilteringOption.ALL:
         return null
-      case NotesDisplayOption.FAVOURITES:
+      case NotesFilteringOption.FAVOURITES:
         return where('isFavourite', '==', true)
+      case NotesFilteringOption.EXCEPT_FAVOURITES:
+        return where('isFavourite', '==', false)
       default:
-        return this.getDisplayOptionFilter(NotesDisplayOption.DEFAULT)
+        return this.getQueryConstraints(NotesFilteringOption.DEFAULT)
     }
   }
 
@@ -87,6 +95,7 @@ export class NotesService {
       lastUpdateTimestamp: now,
       userId: this.userService.currentUser!.uid
     })
+    this.favouriteNotesService?.storeUserFavouriteNotes()
   }
 
   async deleteNote(noteId: string) {
@@ -94,15 +103,21 @@ export class NotesService {
   }
 
   async deleteUserNotesExceptFavourites() {
-    const userNotes = await firstValueFrom(this.getUserNotes$(NotesDisplayOption.ALL))
-    for (const note of userNotes.filter(note => !note.isFavourite))
+    const userNotesExceptFavourites = await firstValueFrom(
+      this.getUserNotes$(NotesFilteringOption.EXCEPT_FAVOURITES)
+    )
+    for (const note of userNotesExceptFavourites)
       await this.deleteNote(note.id!)
+    this.favouriteNotesService?.storeUserFavouriteNotes()
   }
 
   async deleteUserFavouriteNotes() {
-    const userNotes = await firstValueFrom(this.getUserNotes$(NotesDisplayOption.FAVOURITES))
-    for (const note of userNotes)
+    const userFavouriteNotes = await firstValueFrom(
+      this.getUserNotes$(NotesFilteringOption.FAVOURITES)
+    )
+    for (const note of userFavouriteNotes)
       await this.deleteNote(note.id!)
+    this.favouriteNotesService?.storeUserFavouriteNotes()
   }
 
   async updateNote(noteId: string, note: Note) {
@@ -110,11 +125,13 @@ export class NotesService {
       ...note,
       lastUpdateTimestamp: new Date()
     })
+    this.favouriteNotesService?.storeUserFavouriteNotes()
   }
 
   async toggleNoteIsFavourite(note: Note) {
     await updateDoc(doc(this.notesCollection, note.id!), {
       isFavourite: !note.isFavourite
     })
+    this.favouriteNotesService?.storeUserFavouriteNotes()
   }
 }
