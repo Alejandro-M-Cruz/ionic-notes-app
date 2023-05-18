@@ -80,6 +80,10 @@ export class LocalNotesService {
     )
   }
 
+  getNoteById$(noteId: string): Observable<Note | undefined> {
+    return this.notes$.pipe(map(notes => notes.find(note => note.id === noteId)))
+  }
+
   private async deleteAllStoredNotes() {
     await this.db!.executeSql('DELETE FROM notes;', [])
   }
