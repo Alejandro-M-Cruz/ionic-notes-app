@@ -38,26 +38,43 @@
 
 /* Alerts customization */
 
-@mixin alert-button($color) {
+@mixin custom-alert-button($color) {
   color: var(--ion-color-#{$color}-contrast);
   background-color: var(--ion-color-#{$color});
   border-radius: 4px;
-  margin: 0 6px 6px 6px;
+  margin: 0 4px 4px 4px;
 }
 
-.error-alert .alert-accept-button {
-  @include alert-button(primary);
+.error-alert {
+  .alert-title {
+    color: var(--ion-color-danger);
+  }
+
+  .alert-accept-button {
+    @include custom-alert-button(primary);
+  }
 }
 
-.information-alert .alert-accept-button {
-  @include alert-button(primary);
+.information-alert {
+  .alert-title {
+    color: var(--ion-color-primary);
+  }
+
+  .alert-button.alert-accept-button {
+    @include custom-alert-button(primary);
+  }
 }
 
-.delete-confirmation-alert .alert-cancel-button {
-  @include alert-button(primary);
-}
+.delete-confirmation-alert {
+  .alert-title {
+    color: var(--ion-color-danger);
+  }
 
-.delete-confirmation-alert .alert-delete-button {
-  @include alert-button(danger);
-}
+  .alert-cancel-button {
+    @include custom-alert-button(primary);
+  }
 
+  .alert-button.alert-delete-button {
+    @include custom-alert-button(danger);
+  }
+}
