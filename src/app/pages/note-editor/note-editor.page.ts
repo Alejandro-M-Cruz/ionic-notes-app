@@ -48,7 +48,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   }
 
   private loadNoteBeingEdited() {
-    this.noteSubscription = this.notesService.getNoteById(this.noteId!).subscribe(async note => {
+    this.noteSubscription = this.notesService.getNoteById$(this.noteId!).subscribe(async note => {
       this.note = note
       if (!note)
         await this.onNoteDeleted()
@@ -56,7 +56,7 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   }
 
   private async loadNoteFormInitialValue() {
-    const initialFormValue = await firstValueFrom(this.notesService.getNoteById(this.noteId!))
+    const initialFormValue = await firstValueFrom(this.notesService.getNoteById$(this.noteId!))
     this.noteForm.patchValue(initialFormValue!)
   }
 

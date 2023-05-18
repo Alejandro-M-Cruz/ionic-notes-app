@@ -45,7 +45,16 @@ export class LocalNotesService {
   }
 
   private async loadNotes() {
-    const result = await this.db!.executeSql('SELECT * FROM notes;', [])
+    const result = await this.db!.executeSql(`
+      SELECT
+        id,
+        title,
+        content,
+        creation_timestamp,
+        last_update_timestamp,
+        datetime(local_storage_timestamp, 'localtime') as local_storage_timestamp
+      FROM notes;`, []
+    )
     const notes: Note[] = []
     if (result.rows.length) {
       for (let i = 0; i < result.rows.length; i++)
@@ -69,14 +78,15 @@ export class LocalNotesService {
       id: row.id,
       title: row.title,
       content: row.content,
-      creationTimestamp: new Date(row.created_at),
-      lastUpdateTimestamp: new Date(row.last_updated_at),
+      creationTimestamp: new Date(row.creation_timestamp),
+      lastUpdateTimestamp: new Date(row.last_update_timestamp),
+      localStorageTimestamp: new Date(row.local_storage_timestamp)
     } as Note
   }
 
   getNotes$(sortingMethod?: NotesSortingMethod): Observable<Note[]> {
     return this.notes$.pipe(
-      map(favouriteNotes => favouriteNotes.sort(this.getSortingFunction(sortingMethod)))
+      map(notes => notes.sort(this.getSortingFunction(sortingMethod)))
     )
   }
 
@@ -91,7 +101,7 @@ export class LocalNotesService {
   private async addNotes(notes: Note[]) {
     if (notes.length === 0)
       return
-    const sql = 'INSERT INTO notes (id, title, content, created_at, last_updated_at) VALUES' +
+    const sql = 'INSERT INTO notes (id, title, content, creation_timestamp, last_update_timestamp) VALUES' +
       notes.map(note => ' (?, ?, ?, ?, ?)') + ';'
     await this.db!.executeSql(sql, notes.flatMap(this.noteToSqliteRow))
   }

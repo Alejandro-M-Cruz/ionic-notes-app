@@ -33,7 +33,7 @@ export class NotesService {
     }
   }
 
-  getNoteById(noteId: string): Observable<Note | undefined> {
+  getNoteById$(noteId: string): Observable<Note | undefined> {
     return docData(doc(this.notesCollection, noteId), {idField: 'id'}).pipe(
       map(docData => docData ? this.firestoreDocDataToNote(docData) : undefined)
     )
@@ -41,9 +41,9 @@ export class NotesService {
 
   getUserNotes$(displayOption?: NotesFilteringOption, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
     const queryConstraints = [where('userId', '==', this.userService.currentUser!.uid)]
-    const displayOptionFilter = this.getQueryConstraints(displayOption)
-    if (displayOptionFilter)
-      queryConstraints.push(displayOptionFilter)
+    const queryConstraint = this.getQueryConstraintBasedOnFilteringOption(displayOption)
+    if (queryConstraint)
+      queryConstraints.push(queryConstraint)
     queryConstraints.push(this.getSortingFunction(sortingMethod))
     return collectionData(query(this.notesCollection, ...queryConstraints), {idField: 'id'})
       .pipe(map(notes => notes.map(this.firestoreDocDataToNote)))
@@ -53,7 +53,7 @@ export class NotesService {
     return this.getUserNotes$(displayOption).pipe(map(userNotes => userNotes.length))
   }
 
-  private getQueryConstraints(filteringOption?: NotesFilteringOption): any {
+  private getQueryConstraintBasedOnFilteringOption(filteringOption?: NotesFilteringOption): any {
     switch (filteringOption) {
       case NotesFilteringOption.ALL:
         return null
@@ -62,7 +62,7 @@ export class NotesService {
       case NotesFilteringOption.EXCEPT_FAVOURITES:
         return where('isFavourite', '==', false)
       default:
-        return this.getQueryConstraints(NotesFilteringOption.DEFAULT)
+        return this.getQueryConstraintBasedOnFilteringOption(NotesFilteringOption.DEFAULT)
     }
   }
 
@@ -92,6 +92,7 @@ export class NotesService {
 
   async deleteNote(noteId: string) {
     await deleteDoc(doc(this.notesCollection, noteId))
+    await this.storeFavouriteNotesLocally()
   }
 
   async deleteUserNotesExceptFavourites() {

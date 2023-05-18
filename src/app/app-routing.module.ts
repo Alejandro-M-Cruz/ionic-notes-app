@@ -49,20 +49,26 @@ const routes: Routes = [
     data: { authGuardPipe: redirectUnauthenticatedToSignIn }
   },
   {
+    title: 'Note editor',
     path: 'note-editor',
     loadChildren: () => import('./pages/note-editor/note-editor.module').then(m => m.NoteEditorPageModule),
     canActivate: [AuthGuard],
     data: { authGuardPipe: redirectUnauthenticatedToSignIn }
   },
   {
+    title: 'No connection',
     path: 'no-connection',
     loadChildren: () => import('./pages/no-connection/no-connection.module').then(m => m.NoConnectionPageModule)
+  },
+  {
+    title: 'Note viewer',
+    path: 'note-viewer',
+    loadChildren: () => import('./pages/note-viewer/note-viewer.module').then( m => m.NoteViewerPageModule)
   },
   {
     path: '**',
     redirectTo: 'home'
   },
-
 ];
 
 @NgModule({

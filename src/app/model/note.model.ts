@@ -20,6 +20,7 @@ export class Note {
   isFavourite!: boolean
   creationTimestamp!: Date
   lastUpdateTimestamp!: Date
+  localStorageTimestamp?: Date
   userId!: string
 }
 

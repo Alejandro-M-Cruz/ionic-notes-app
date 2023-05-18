@@ -13,7 +13,7 @@
     </ion-button>
   </ion-row>
   <ng-template #readonlyNoteOptions class="ion-justify-content-around">
-    <ion-button fill="clear" shape="round">
+    <ion-button fill="clear" shape="round" (click)="onViewNoteButtonClicked()">
       <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
     </ion-button>
   </ng-template>
