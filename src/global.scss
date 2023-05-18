@@ -49,6 +49,10 @@
   @include alert-button(primary);
 }
 
+.information-alert .alert-accept-button {
+  @include alert-button(primary);
+}
+
 .delete-confirmation-alert .alert-cancel-button {
   @include alert-button(primary);
 }

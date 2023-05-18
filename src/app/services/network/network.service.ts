@@ -17,17 +17,20 @@ export class NetworkService {
     return Network.getStatus().then(status => status.connected)
   }
 
-  async listenToNetworkChanges() {
+  listenToNetworkChanges() {
     this.networkListener = Network.addListener('networkStatusChange', status => {
       this.onConnectionChangeEventFired(status.connected)
     })
-    if (!await this.isConnected())
-      await this.onAppStartedWithNoConnection()
   }
 
   private async onConnectionChangeEventFired(isConnected: boolean) {
     if (isConnected === this.previousConnectionStatus)
       return
+    if (this.previousConnectionStatus === undefined) {
+      this.previousConnectionStatus = isConnected
+      if (!isConnected)
+        await this.onAppStartedWithNoConnection()
+    }
     this.previousConnectionStatus = isConnected
     this.ngZone.run(() => {
       isConnected ? this.onConnectionRestored() : this.onConnectionLost()

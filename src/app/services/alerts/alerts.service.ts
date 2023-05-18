@@ -1,3 +1,4 @@
+import { CssSelector } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import {AlertController} from "@ionic/angular";
 
@@ -70,5 +71,18 @@ export class AlertsService {
     await confirmationAlert.present()
     confirmationAlert.onDidDismiss()
       .then($event => onClose?.($event.role === 'delete'))
+  }
+
+  async showInformationAlert(title: string, message: string) {
+    const informationAlert = await this.alertController.create({
+      header: title,
+      message,
+      buttons: [{
+        text: 'Accept',
+        cssClass: 'alert-accept-button'
+      }],
+      cssClass: 'information-alert'
+    })
+    await informationAlert.present()
   }
 }
