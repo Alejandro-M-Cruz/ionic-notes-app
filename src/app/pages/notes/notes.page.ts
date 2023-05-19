@@ -1,10 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../../services/user/user.service";
 import {NotesService} from "../../services/notes/notes.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {Router} from "@angular/router";
-import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 import {Subscription} from "rxjs";
 import {Capacitor} from "@capacitor/core";
 
@@ -13,7 +12,7 @@ import {Capacitor} from "@capacitor/core";
   templateUrl: './notes.page.html',
   styleUrls: ['./notes.page.scss'],
 })
-export class NotesPage implements ViewWillEnter, ViewWillLeave {
+export class NotesPage implements OnInit, OnDestroy {
   displayOption = NotesFilteringOption.DEFAULT
   notesSortingMethod = NotesSortingMethod.DEFAULT
   userNotes?: Note[]
@@ -27,11 +26,11 @@ export class NotesPage implements ViewWillEnter, ViewWillLeave {
     private router: Router
   ) {}
 
-  ionViewWillEnter() {
+  ngOnInit() {
     this.subscribeToUserNotes()
   }
 
-  ionViewWillLeave() {
+  ngOnDestroy() {
     this.userNotesSubscription?.unsubscribe()
   }
 

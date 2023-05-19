@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {
   addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, orderBy, query, updateDoc, where
 } from "@angular/fire/firestore";
-import {firstValueFrom, map, Observable} from "rxjs";
+import {BehaviorSubject, firstValueFrom, map, Observable, Subscription} from "rxjs";
 import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../user/user.service";
 import {LocalNotesService} from "./local-notes.service";
@@ -15,6 +15,8 @@ import {NetworkService} from "../network/network.service";
 export class NotesService {
   private notesCollection = collection(this.firestore, 'notes')
   private favouriteNotesService?: LocalNotesService
+  private userNotes$ = new BehaviorSubject<Note[]>([])
+  private userNotesSubscription?: Subscription
 
   constructor(
     private firestore: Firestore,
@@ -33,45 +35,54 @@ export class NotesService {
     }
   }
 
-  getNoteById$(noteId: string): Observable<Note | undefined> {
-    return docData(doc(this.notesCollection, noteId), {idField: 'id'}).pipe(
-      map(docData => docData ? this.firestoreDocDataToNote(docData) : undefined)
+  private getUserNotesFromFirestore$(userId: string): Observable<Note[]> {
+    const q = query(this.notesCollection, where('userId', '==', userId))
+    return collectionData(q, {idField: 'id'}).pipe(
+      map(userNotes => userNotes.map(this.firestoreDocDataToNote))
     )
   }
 
-  getUserNotes$(displayOption?: NotesFilteringOption, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
-    const queryConstraints = [where('userId', '==', this.userService.currentUser!.uid)]
-    const queryConstraint = this.getQueryConstraintBasedOnFilteringOption(displayOption)
-    if (queryConstraint)
-      queryConstraints.push(queryConstraint)
-    queryConstraints.push(this.getSortingFunction(sortingMethod))
-    return collectionData(query(this.notesCollection, ...queryConstraints), {idField: 'id'})
-      .pipe(map(notes => notes.map(this.firestoreDocDataToNote)))
+  private loadUserNotes(userId: string) {
+    this.userNotesSubscription?.unsubscribe()
+    this.userNotesSubscription = this.getUserNotesFromFirestore$(userId).subscribe(this.userNotes$)
   }
 
-  getUserNotesQuantity$(displayOption?: NotesFilteringOption): Observable<number> {
-    return this.getUserNotes$(displayOption).pipe(map(userNotes => userNotes.length))
+  getNoteById$(noteId: string): Observable<Note | undefined> {
+    return this.userNotes$.pipe(map(userNotes => userNotes.find(note => note.id === noteId)))
   }
 
-  private getQueryConstraintBasedOnFilteringOption(filteringOption?: NotesFilteringOption): any {
+  getUserNotes$(filteringOption?: NotesFilteringOption, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
+    return this.userNotes$.pipe(
+      map(userNotes => userNotes.filter(this.getFilteringFunction(filteringOption))),
+      map(userNotes => userNotes.sort(this.getSortingFunction(sortingMethod)))
+    )
+  }
+
+  getUserNotesQuantity$(filteringOption?: NotesFilteringOption): Observable<number> {
+    return this.getUserNotes$(filteringOption).pipe(map(userNotes => userNotes.length))
+  }
+
+  private getFilteringFunction(filteringOption?: NotesFilteringOption): any {
     switch (filteringOption) {
       case NotesFilteringOption.ALL:
-        return null
+        return (note: Note) => true
       case NotesFilteringOption.FAVOURITES:
-        return where('isFavourite', '==', true)
+        return (note: Note) => note.isFavourite
       case NotesFilteringOption.EXCEPT_FAVOURITES:
-        return where('isFavourite', '==', false)
+        return (note: Note) => !note.isFavourite
       default:
-        return this.getQueryConstraintBasedOnFilteringOption(NotesFilteringOption.DEFAULT)
+        return this.getFilteringFunction(NotesFilteringOption.DEFAULT)
     }
   }
 
   private getSortingFunction(sortingMethod?: NotesSortingMethod): any {
     switch (sortingMethod) {
       case NotesSortingMethod.LAST_UPDATED_FIRST:
-        return orderBy('lastUpdateTimestamp', 'desc')
+        return (note1: Note, note2: Note) =>
+          note2.lastUpdateTimestamp.getTime() - note1.lastUpdateTimestamp.getTime()
       case NotesSortingMethod.LAST_UPDATED_LAST:
-        return orderBy('lastUpdateTimestamp', 'asc')
+        return (note1: Note, note2: Note) =>
+          note1.lastUpdateTimestamp.getTime() - note2.lastUpdateTimestamp.getTime()
       default:
         return this.getSortingFunction(NotesSortingMethod.DEFAULT)
     }
@@ -129,18 +140,21 @@ export class NotesService {
   }
 
   private async storeFavouriteNotesLocally() {
-    this.favouriteNotesService?.storeNotes(
-      await firstValueFrom(this.getUserNotes$(NotesFilteringOption.FAVOURITES))
-    )
+    this.favouriteNotesService?.storeNotes(this.userNotes$.value)
   }
 
   storeFavouriteNotesLocallyWhenUserChanges() {
     this.userService.currentUser$.subscribe(async user => {
       if (!await this.networkService.isConnected())
         return
-      user ?
-        await this.storeFavouriteNotesLocally() :
+      if (user) {
+        this.loadUserNotes(user.uid)
+        await this.storeFavouriteNotesLocally()
+      } else {
+        this.userNotesSubscription?.unsubscribe()
         await this.favouriteNotesService?.deleteAllStoredNotes()
+      }
     })
   }
+
 }

@@ -10,21 +10,15 @@ import {NotesService} from "./services/notes/notes.service";
 })
 export class AppComponent implements OnInit, OnDestroy {
   networkService?: NetworkService
-  notesService?: NotesService
 
-  constructor() {
+  constructor(private notesService: NotesService) {
     if (Capacitor.isNativePlatform())
-      this.injectServices()
-  }
-
-  private injectServices() {
-    this.networkService = inject(NetworkService)
-    this.notesService = inject(NotesService)
+      this.networkService = inject(NetworkService)
   }
 
   async ngOnInit() {
     await this.networkService?.listenToNetworkChanges()
-    await this.notesService?.storeFavouriteNotesLocallyWhenUserChanges()
+    await this.notesService.storeFavouriteNotesLocallyWhenUserChanges()
   }
 
   async ngOnDestroy() {
