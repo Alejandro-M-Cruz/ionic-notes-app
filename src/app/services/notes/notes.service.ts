@@ -136,8 +136,11 @@ export class NotesService {
 
   storeFavouriteNotesLocallyWhenUserChanges() {
     this.userService.currentUser$.subscribe(async user => {
-      if (user && await this.networkService.isConnected())
-        await this.storeFavouriteNotesLocally()
+      if (!await this.networkService.isConnected())
+        return
+      user ?
+        await this.storeFavouriteNotesLocally() :
+        await this.favouriteNotesService?.deleteAllStoredNotes()
     })
   }
 }

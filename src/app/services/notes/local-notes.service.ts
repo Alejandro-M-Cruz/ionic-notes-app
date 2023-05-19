@@ -94,7 +94,8 @@ export class LocalNotesService {
     return this.notes$.pipe(map(notes => notes.find(note => note.id === noteId)))
   }
 
-  private async deleteAllStoredNotes() {
+  async deleteAllStoredNotes() {
+    await this.initDb()
     await this.db!.executeSql('DELETE FROM notes;', [])
   }
 
@@ -107,7 +108,6 @@ export class LocalNotesService {
   }
 
   async storeNotes(notes: Note[]) {
-    await this.initDb()
     await this.deleteAllStoredNotes()
     await this.addNotes(notes)
     await this.loadNotes()
