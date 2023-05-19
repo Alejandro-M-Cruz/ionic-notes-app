@@ -1,8 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {
-  addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, orderBy, query, updateDoc, where
+  addDoc, collection, collectionData, deleteDoc, doc, Firestore, query, updateDoc, where
 } from "@angular/fire/firestore";
-import {BehaviorSubject, firstValueFrom, map, Observable, Subscription} from "rxjs";
+import {BehaviorSubject, first, firstValueFrom, map, Observable, Subscription} from "rxjs";
 import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../user/user.service";
 import {LocalNotesService} from "./local-notes.service";
@@ -98,12 +98,12 @@ export class NotesService {
       lastUpdateTimestamp: now,
       userId: this.userService.currentUser!.uid
     })
-    await this.storeFavouriteNotesLocally()
+    this.storeFavouriteNotesLocally()
   }
 
   async deleteNote(noteId: string) {
     await deleteDoc(doc(this.notesCollection, noteId))
-    await this.storeFavouriteNotesLocally()
+    this.storeFavouriteNotesLocally()
   }
 
   async deleteUserNotesExceptFavourites() {
@@ -112,7 +112,7 @@ export class NotesService {
     )
     for (const note of userNotesExceptFavourites)
       await this.deleteNote(note.id!)
-    await this.storeFavouriteNotesLocally()
+    this.storeFavouriteNotesLocally()
   }
 
   async deleteUserFavouriteNotes() {
@@ -121,7 +121,7 @@ export class NotesService {
     )
     for (const note of userFavouriteNotes)
       await this.deleteNote(note.id!)
-    await this.storeFavouriteNotesLocally()
+    this.storeFavouriteNotesLocally()
   }
 
   async updateNote(noteId: string, note: Note) {
@@ -129,18 +129,25 @@ export class NotesService {
       ...note,
       lastUpdateTimestamp: new Date()
     })
-    await this.storeFavouriteNotesLocally()
+    this.storeFavouriteNotesLocally()
   }
 
   async toggleNoteIsFavourite(note: Note) {
     await updateDoc(doc(this.notesCollection, note.id!), {
       isFavourite: !note.isFavourite
     })
-    await this.storeFavouriteNotesLocally()
+    this.storeFavouriteNotesLocally()
   }
 
-  private async storeFavouriteNotesLocally() {
-    this.favouriteNotesService?.storeNotes(this.userNotes$.value)
+  private getFavouriteNotesWhenLengthIsGreaterThanZero$(): Observable<Note[]> {
+    return this.getUserNotes$(NotesFilteringOption.FAVOURITES)
+      .pipe(first(favouriteNotes => favouriteNotes.length > 0))
+  }
+
+  private storeFavouriteNotesLocally() {
+    this.getFavouriteNotesWhenLengthIsGreaterThanZero$().subscribe(async favouriteNotes => {
+      await this.favouriteNotesService?.storeNotes(favouriteNotes)
+    })
   }
 
   storeFavouriteNotesLocallyWhenUserChanges() {
@@ -149,12 +156,11 @@ export class NotesService {
         return
       if (user) {
         this.loadUserNotes(user.uid)
-        await this.storeFavouriteNotesLocally()
+        this.storeFavouriteNotesLocally()
       } else {
         this.userNotesSubscription?.unsubscribe()
         await this.favouriteNotesService?.deleteAllStoredNotes()
       }
     })
   }
-
 }

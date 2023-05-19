@@ -26,6 +26,24 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 
+/* Ion badge text slightly larger */
+
+ion-badge {
+  font-size: 16px;
+}
+
+
+/* Margin under the notes grid */
+
+.md ion-col.note-container:last-child {
+  margin-bottom: 240px;
+}
+
+.ios ion-col.note-container:last-child {
+  margin-bottom: 282px;
+}
+
+
 /* Message that appears in the middle of the screen when user has no notes */
 
 .md .no-notes-message {
