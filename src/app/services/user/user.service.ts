@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import {Auth, authState, updateProfile} from "@angular/fire/auth";
 import {User} from "../../model/user.model";
 import {map, Observable} from "rxjs";
+import {ProfilePhotoService} from "./profile-photo.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private auth: Auth) { }
+  constructor(private auth: Auth, private profilePhotoService: ProfilePhotoService) { }
 
   private firebaseUserToUser(firebaseUser: any): User | null {
     return firebaseUser ? {
@@ -29,13 +30,16 @@ export class UserService {
       .pipe(map(firebaseUser => this.firebaseUserToUser(firebaseUser)))
   }
 
-  async updateProfilePhotoUrl(photoUrl: string) {
+  async updateProfilePhoto(profilePhoto: File) {
+    const photoUrl = await this.profilePhotoService.uploadUserProfilePhoto(
+      this.auth.currentUser!.uid,
+      profilePhoto
+    )
     await updateProfile(this.auth.currentUser!, { photoURL: photoUrl })
-    location.reload()
   }
 
-  async removeUserProfilePhoto() {
+  async removeProfilePhoto() {
     await updateProfile(this.auth.currentUser!, { photoURL: '' })
-    location.reload()
+    await this.profilePhotoService.deleteUserProfilePhoto(this.auth.currentUser!.uid)
   }
 }

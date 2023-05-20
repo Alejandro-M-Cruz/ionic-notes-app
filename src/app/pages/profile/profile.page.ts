@@ -6,7 +6,6 @@ import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {AccountDeletionService} from "../../services/user/account-deletion.service";
 import {NotesService} from "../../services/notes/notes.service";
-import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {NotesFilteringOption} from "../../model/note.model";
 import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
@@ -19,8 +18,8 @@ import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 export class ProfilePage implements ViewWillEnter, ViewWillLeave {
   user$ = new BehaviorSubject<User | null>(null)
   private userSubscription?: Subscription
-  userNotesQuantity$?: Observable<number>
-  userFavouriteNotesQuantity$?: Observable<number>
+  userNotesQuantity$?: Observable<number | undefined>
+  userFavouriteNotesQuantity$?: Observable<number | undefined>
   private readonly accountDeletionConfirmationTitle = 'Deleting account'
   private readonly accountDeletionConfirmationMessage =
     'Are you sure you want to delete your account and all of your notes? THIS ACTION CANNOT BE UNDONE'
@@ -34,7 +33,6 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
     private notesService: NotesService,
     private alertsService: AlertsService,
     private accountDeletionService: AccountDeletionService,
-    private profilePhotoService: ProfilePhotoService,
     private router: Router
   ) { }
 
@@ -97,8 +95,10 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
 
   private async onProfilePhotoRemovalConfirmationClosed(shouldRemoveProfilePhoto: boolean) {
     try {
-      if (shouldRemoveProfilePhoto)
-        await this.profilePhotoService.deleteUserProfilePhoto()
+      if (shouldRemoveProfilePhoto) {
+        await this.userService.removeProfilePhoto()
+        location.reload()
+      }
     } catch (e: any) {
       await this.alertsService.showErrorAlert(e)
     }

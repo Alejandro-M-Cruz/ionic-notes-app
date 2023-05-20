@@ -5,7 +5,7 @@
   ></app-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" [ngSwitch]="userNotes?.length">
+<ion-content [fullscreen]="true">
   <app-notes-grid [notes]="userNotes" [notesAreEditable]="true" [displayOption]="displayOption"></app-notes-grid>
 
   <ion-fab

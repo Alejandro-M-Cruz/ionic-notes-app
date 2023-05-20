@@ -1,7 +1,7 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {ProfilePhotoService} from "../../../services/user/profile-photo.service";
 import {BehaviorSubject, map, Subscription} from "rxjs";
+import {UserService} from "../../../services/user/user.service";
 
 @Component({
   selector: 'app-profile-photo-modifier',
@@ -14,7 +14,7 @@ export class ProfilePhotoModifierComponent implements OnInit, OnDestroy {
   profilePhotoFileChanged$ = new BehaviorSubject(false)
   private profilePhotoFileSubscription?: Subscription
 
-  constructor(private profilePhotoService: ProfilePhotoService) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
     this.subscribeToProfilePhotoFileChanges()
@@ -33,7 +33,8 @@ export class ProfilePhotoModifierComponent implements OnInit, OnDestroy {
   }
 
   async onConfirmButtonClicked() {
-    await this.profilePhotoService.uploadUserProfilePhoto(this.profilePhotoFormControl.value!)
+    await this.userService.updateProfilePhoto(this.profilePhotoFormControl.value!)
+    location.reload()
     this.profilePhotoFileChanged$.next(false)
   }
 

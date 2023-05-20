@@ -3,8 +3,8 @@ import {FormBuilder, FormControl, ValidatorFn, Validators} from "@angular/forms"
 import {User} from "../../model/user.model";
 import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
-import {ProfilePhotoService} from "../../services/user/profile-photo.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-sign-up',
@@ -36,8 +36,8 @@ export class SignUpPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private userService: UserService,
     private router: Router,
-    private profilePhotoService: ProfilePhotoService,
     private alertsService: AlertsService
   ) { }
 
@@ -60,7 +60,9 @@ export class SignUpPage implements OnInit {
 
   private async uploadUserProfilePhoto() {
     const { profilePhoto } = this.signUpForm.value
-    if (profilePhoto)
-      await this.profilePhotoService.uploadUserProfilePhoto(profilePhoto)
+    if (profilePhoto) {
+      await this.userService.updateProfilePhoto(profilePhoto)
+      location.reload()
+    }
   }
 }

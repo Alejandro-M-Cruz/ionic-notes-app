@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {deleteObject, getDownloadURL, ref, Storage, uploadBytes} from "@angular/fire/storage";
-import {UserService} from "./user.service";
 import {DomSanitizer} from "@angular/platform-browser";
 
 @Injectable({
@@ -9,7 +8,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 export class ProfilePhotoService {
   private profilePhotosStorage = 'profile_photos'
 
-  constructor(private storage: Storage, private userService: UserService, private domSanitizer: DomSanitizer) { }
+  constructor(private storage: Storage, private domSanitizer: DomSanitizer) { }
 
   createNotYetUploadedProfilePhotoUrl(profilePhotoFile: File): string {
     const url = URL.createObjectURL(profilePhotoFile)
@@ -20,16 +19,14 @@ export class ProfilePhotoService {
     URL.revokeObjectURL(notYetUploadedProfilePhotoUrl)
   }
 
-  async uploadUserProfilePhoto(profilePhoto: File) {
-    const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
+  async uploadUserProfilePhoto(uid: string, profilePhoto: File) {
+    const path = `${this.profilePhotosStorage}/${uid}`
     const uploadResult = await uploadBytes(ref(this.storage, path), profilePhoto)
-    const profilePhotoUrl = await getDownloadURL(uploadResult.ref)
-    await this.userService.updateProfilePhotoUrl(profilePhotoUrl)
+    return getDownloadURL(uploadResult.ref)
   }
 
-  async deleteUserProfilePhoto() {
-    const path = `${this.profilePhotosStorage}/${this.userService.currentUser!.uid}`
-    await this.userService.removeUserProfilePhoto()
+  async deleteUserProfilePhoto(uid: string) {
+    const path = `${this.profilePhotosStorage}/${uid}`
     await deleteObject(ref(this.storage, path))
   }
 }

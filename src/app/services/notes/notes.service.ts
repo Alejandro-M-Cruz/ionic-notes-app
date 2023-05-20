@@ -15,7 +15,7 @@ import {NetworkService} from "../network/network.service";
 export class NotesService {
   private notesCollection = collection(this.firestore, 'notes')
   private favouriteNotesService?: LocalNotesService
-  private userNotes$ = new BehaviorSubject<Note[]>([])
+  private userNotes$ = new BehaviorSubject<Note[] | null>(null)
   private userNotesSubscription?: Subscription
 
   constructor(
@@ -43,23 +43,24 @@ export class NotesService {
   }
 
   private loadUserNotes(userId: string) {
+    this.userNotes$.next(null)
     this.userNotesSubscription?.unsubscribe()
     this.userNotesSubscription = this.getUserNotesFromFirestore$(userId).subscribe(this.userNotes$)
   }
 
   getNoteById$(noteId: string): Observable<Note | undefined> {
-    return this.userNotes$.pipe(map(userNotes => userNotes.find(note => note.id === noteId)))
+    return this.userNotes$.pipe(map(userNotes => userNotes?.find(note => note.id === noteId)))
   }
 
-  getUserNotes$(filteringOption?: NotesFilteringOption, sortingMethod?: NotesSortingMethod): Observable<Note[]> {
+  getUserNotes$(filteringOption?: NotesFilteringOption, sortingMethod?: NotesSortingMethod) {
     return this.userNotes$.pipe(
-      map(userNotes => userNotes.filter(this.getFilteringFunction(filteringOption))),
-      map(userNotes => userNotes.sort(this.getSortingFunction(sortingMethod)))
+      map(userNotes => userNotes?.filter(this.getFilteringFunction(filteringOption))),
+      map(userNotes => userNotes?.sort(this.getSortingFunction(sortingMethod)))
     )
   }
 
-  getUserNotesQuantity$(filteringOption?: NotesFilteringOption): Observable<number> {
-    return this.getUserNotes$(filteringOption).pipe(map(userNotes => userNotes.length))
+  getUserNotesQuantity$(filteringOption?: NotesFilteringOption) {
+    return this.getUserNotes$(filteringOption).pipe(map(userNotes => userNotes?.length))
   }
 
   private getFilteringFunction(filteringOption?: NotesFilteringOption): any {
@@ -110,7 +111,7 @@ export class NotesService {
     const userNotesExceptFavourites = await firstValueFrom(
       this.getUserNotes$(NotesFilteringOption.EXCEPT_FAVOURITES)
     )
-    for (const note of userNotesExceptFavourites)
+    for (const note of userNotesExceptFavourites!)
       await this.deleteNote(note.id!)
     this.storeFavouriteNotesLocally()
   }
@@ -119,7 +120,7 @@ export class NotesService {
     const userFavouriteNotes = await firstValueFrom(
       this.getUserNotes$(NotesFilteringOption.FAVOURITES)
     )
-    for (const note of userFavouriteNotes)
+    for (const note of userFavouriteNotes!)
       await this.deleteNote(note.id!)
     this.storeFavouriteNotesLocally()
   }
@@ -139,14 +140,15 @@ export class NotesService {
     this.storeFavouriteNotesLocally()
   }
 
-  private getFavouriteNotesWhenLengthIsGreaterThanZero$(): Observable<Note[]> {
+  private getFavouriteNotesWhenLengthIsGreaterThanZero$() {
     return this.getUserNotes$(NotesFilteringOption.FAVOURITES)
-      .pipe(first(favouriteNotes => favouriteNotes.length > 0))
+      .pipe(first(favouriteNotes => (favouriteNotes?.length ?? 0) > 0))
   }
 
   private storeFavouriteNotesLocally() {
     this.getFavouriteNotesWhenLengthIsGreaterThanZero$().subscribe(async favouriteNotes => {
-      await this.favouriteNotesService?.storeNotes(favouriteNotes)
+      if (favouriteNotes)
+        await this.favouriteNotesService?.storeNotes(favouriteNotes)
     })
   }
 
