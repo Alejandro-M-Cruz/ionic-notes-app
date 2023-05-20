@@ -12,15 +12,15 @@ import {UserService} from "../../services/user/user.service";
   styleUrls: ['./sign-up.page.scss'],
 })
 export class SignUpPage implements OnInit {
+  private passwordsMatch: ValidatorFn = (form: any) => {
+    const { password, passwordConfirmation } = form.value
+    return password === passwordConfirmation ? null : { passwordsDoNotMatch: true }
+  }
   private passwordValidators = [
     Validators.minLength(User.MIN_PASSWORD_LENGTH),
     Validators.maxLength(User.MAX_PASSWORD_LENGTH),
     Validators.required
   ]
-  private passwordsMatch: ValidatorFn = (form: any) => {
-    const { password, passwordConfirmation } = form.value
-    return password === passwordConfirmation ? null : { passwordsDoNotMatch: true }
-  }
   signUpForm = this.formBuilder.nonNullable.group({
     username: ['', [
       Validators.minLength(User.MIN_USERNAME_LENGTH),
