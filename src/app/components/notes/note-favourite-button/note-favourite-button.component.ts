@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Note} from "../../../model/note.model";
 import {NotesService} from "../../../services/notes/notes.service";
 import {IonicModule} from "@ionic/angular";
@@ -12,12 +12,10 @@ import {IonicModule} from "@ionic/angular";
   ],
   standalone: true
 })
-export class NoteFavouriteButtonComponent  implements OnInit {
+export class NoteFavouriteButtonComponent {
   @Input() note!: Note
 
   constructor(private notesService: NotesService) { }
-
-  ngOnInit() {}
 
   async onFavouriteButtonClicked() {
     await this.notesService.toggleNoteIsFavourite(this.note)

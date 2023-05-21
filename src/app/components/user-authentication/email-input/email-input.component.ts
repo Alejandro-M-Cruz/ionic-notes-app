@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {IonicModule} from "@ionic/angular";
 
@@ -12,10 +12,6 @@ import {IonicModule} from "@ionic/angular";
   ],
   standalone: true
 })
-export class EmailInputComponent  implements OnInit {
+export class EmailInputComponent {
   @Input() control!: FormControl
-  constructor() { }
-
-  ngOnInit() {}
-
 }

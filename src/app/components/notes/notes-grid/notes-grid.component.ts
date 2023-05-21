@@ -22,7 +22,4 @@ export class NotesGridComponent {
   @Input() notes: Note[] | undefined
   @Input() displayOption: NotesFilteringOption | string = NotesFilteringOption.DEFAULT
   @Input() notesAreEditable!: boolean
-
-  constructor() { }
-
 }

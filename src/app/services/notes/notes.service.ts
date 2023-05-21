@@ -66,7 +66,7 @@ export class NotesService {
   private getFilteringFunction(filteringOption?: NotesFilteringOption): any {
     switch (filteringOption) {
       case NotesFilteringOption.ALL:
-        return (note: Note) => true
+        return (_: Note) => true
       case NotesFilteringOption.FAVOURITES:
         return (note: Note) => note.isFavourite
       case NotesFilteringOption.EXCEPT_FAVOURITES:

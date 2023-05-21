@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {IonicModule} from "@ionic/angular";
 import {Note} from "../../../model/note.model";
 import {NotesService} from "../../../services/notes/notes.service";
@@ -11,15 +11,13 @@ import {AlertsService} from "../../../services/alerts/alerts.service";
   imports: [IonicModule],
   standalone: true
 })
-export class NoteDeletionButtonComponent implements OnInit {
+export class NoteDeletionButtonComponent {
   @Input() note!: Note
 
   constructor(
     private notesService: NotesService,
     private alertsService: AlertsService
   ) { }
-
-  ngOnInit() {}
 
   private get noteDeletionConfirmationMessage() {
     return `Are you sure you want to delete the note with title "${this.getNoteTitlePreview()}"?`

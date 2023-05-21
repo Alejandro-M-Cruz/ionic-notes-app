@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from '@angular/core';
 import {Network} from "@capacitor/network";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {PluginListenerHandle} from "@capacitor/core";
 import {ToastsService} from "../alerts/toasts.service";
 import {Location} from "@angular/common";

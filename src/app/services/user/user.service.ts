@@ -26,8 +26,11 @@ export class UserService {
   }
 
   get currentUser$(): Observable<User | null> {
-    return authState(this.auth)
-      .pipe(map(firebaseUser => this.firebaseUserToUser(firebaseUser)))
+    return authState(this.auth).pipe(map(this.firebaseUserToUser))
+  }
+
+  async updateUsername(username: string) {
+    await updateProfile(this.auth.currentUser!, { displayName: username })
   }
 
   async updateProfilePhoto(profilePhoto: File) {

@@ -1,6 +1,6 @@
-import { CssSelector } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import {AlertController} from "@ionic/angular";
+import {USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH} from "../../model/user.model";
 
 export enum ErrorMessage {
   EMAIL_ALREADY_IN_USE = 'The email address is already in use by another account',
@@ -42,8 +42,8 @@ export class AlertsService {
       }],
       cssClass: 'error-alert'
     })
-    await errorAlert.present()
     errorAlert.onDidDismiss().then(() => onClose?.())
+    await errorAlert.present()
   }
 
   async showDeleteConfirmationAlert(
@@ -68,9 +68,9 @@ export class AlertsService {
       ],
       cssClass: 'delete-confirmation-alert'
     })
-    await confirmationAlert.present()
     confirmationAlert.onDidDismiss()
       .then($event => onClose?.($event.role === 'delete'))
+    await confirmationAlert.present()
   }
 
   async showInformationAlert(title: string, message: string) {

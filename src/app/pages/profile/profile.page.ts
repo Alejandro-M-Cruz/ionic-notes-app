@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
-import {User} from "../../model/user.model";
+import {User, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH} from "../../model/user.model";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
@@ -8,7 +8,8 @@ import {AccountDeletionService} from "../../services/user/account-deletion.servi
 import {NotesService} from "../../services/notes/notes.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {NotesFilteringOption} from "../../model/note.model";
-import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
+import {IonModal, ViewWillEnter, ViewWillLeave} from "@ionic/angular";
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-profile',
@@ -20,6 +21,15 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
   private userSubscription?: Subscription
   userNotesQuantity$?: Observable<number | undefined>
   userFavouriteNotesQuantity$?: Observable<number | undefined>
+  @ViewChild('usernameEditor') usernameEditorModal!: IonModal
+  usernameFormControl = new FormControl('', {
+    nonNullable: true,
+    validators: [
+      Validators.minLength(USERNAME_MIN_LENGTH),
+      Validators.maxLength(USERNAME_MAX_LENGTH),
+      Validators.required
+    ]
+  })
   private readonly accountDeletionConfirmationTitle = 'Deleting account'
   private readonly accountDeletionConfirmationMessage =
     'Are you sure you want to delete your account and all of your notes? THIS ACTION CANNOT BE UNDONE'
@@ -110,5 +120,16 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
       this.profilePhotoRemovalConfirmationMessage,
       this.onProfilePhotoRemovalConfirmationClosed.bind(this)
     )
+  }
+
+  async onCancelUsernameEditionButtonClicked() {
+    this.usernameFormControl.reset()
+    await this.usernameEditorModal.dismiss()
+  }
+
+  async onConfirmUsernameEditionButtonClicked() {
+    await this.userService.updateUsername(this.usernameFormControl.value)
+    await this.usernameEditorModal.dismiss()
+    location.reload()
   }
 }

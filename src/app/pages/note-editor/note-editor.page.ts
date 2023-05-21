@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {NotesService} from "../../services/notes/notes.service";
 import {FormBuilder, Validators} from "@angular/forms";
-import {Note} from "../../model/note.model";
+import {Note, NOTE_CONTENT_MAX_LENGTH, NOTE_TITLE_MAX_LENGTH} from "../../model/note.model";
 import {ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 import {firstValueFrom, Subscription} from "rxjs";
 
@@ -16,8 +16,8 @@ export class NoteEditorPage implements ViewWillEnter, ViewWillLeave {
   isFavourite?: boolean
   note?: Note
   noteSubscription?: Subscription
-  readonly titleMaxLength = Note.TITLE_MAX_LENGTH
-  readonly contentMaxLength = Note.CONTENT_MAX_LENGTH
+  readonly titleMaxLength = NOTE_TITLE_MAX_LENGTH
+  readonly contentMaxLength = NOTE_CONTENT_MAX_LENGTH
   noteForm = this.formBuilder.nonNullable.group({
     title: ['', Validators.maxLength(this.titleMaxLength)],
     content: ['', Validators.maxLength(this.contentMaxLength)]

@@ -13,18 +13,20 @@ import {
   ProfilePhotoInputComponent
 } from "../../components/user-authentication/profile-photo-input/profile-photo-input.component";
 import {ProfilePhotoModifierComponent} from "./profile-photo-modifier/profile-photo-modifier.component";
+import {UsernameInputComponent} from "../../components/user-authentication/username-input/username-input.component";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ProfilePageRoutingModule,
-    SignInPageModule,
-    ToolbarComponent,
-    NgOptimizedImage,
-    ProfilePhotoInputComponent
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ProfilePageRoutingModule,
+        SignInPageModule,
+        ToolbarComponent,
+        NgOptimizedImage,
+        ProfilePhotoInputComponent,
+        UsernameInputComponent
+    ],
     declarations: [ProfilePage, ProfilePhotoModifierComponent]
 })
 export class ProfilePageModule {}

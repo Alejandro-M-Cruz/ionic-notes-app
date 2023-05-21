@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {User} from "../../../model/user.model";
+import {Component, Input} from '@angular/core';
+import {USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH} from "../../../model/user.model";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {IonicModule} from "@ionic/angular";
 
@@ -13,13 +13,8 @@ import {IonicModule} from "@ionic/angular";
   ],
   standalone: true
 })
-export class UsernameInputComponent  implements OnInit {
+export class UsernameInputComponent {
   @Input() control!: FormControl
-  readonly minLength = User.MIN_USERNAME_LENGTH
-  readonly maxLength = User.MAX_USERNAME_LENGTH
-
-  constructor() { }
-
-  ngOnInit() {}
-
+  readonly minLength = USERNAME_MIN_LENGTH
+  readonly maxLength = USERNAME_MAX_LENGTH
 }

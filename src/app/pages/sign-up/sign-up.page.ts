@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {FormBuilder, FormControl, ValidatorFn, Validators} from "@angular/forms";
-import {User} from "../../model/user.model";
+import {
+  USER_PASSWORD_MAX_LENGTH, USERNAME_MAX_LENGTH, USER_PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH
+} from "../../model/user.model";
 import {AuthService} from "../../services/user/auth.service";
 import {Router} from "@angular/router";
 import {AlertsService} from "../../services/alerts/alerts.service";
@@ -11,20 +13,20 @@ import {UserService} from "../../services/user/user.service";
   templateUrl: './sign-up.page.html',
   styleUrls: ['./sign-up.page.scss'],
 })
-export class SignUpPage implements OnInit {
+export class SignUpPage {
   private passwordsMatch: ValidatorFn = (form: any) => {
     const { password, passwordConfirmation } = form.value
     return password === passwordConfirmation ? null : { passwordsDoNotMatch: true }
   }
   private passwordValidators = [
-    Validators.minLength(User.MIN_PASSWORD_LENGTH),
-    Validators.maxLength(User.MAX_PASSWORD_LENGTH),
+    Validators.minLength(USER_PASSWORD_MIN_LENGTH),
+    Validators.maxLength(USER_PASSWORD_MAX_LENGTH),
     Validators.required
   ]
   signUpForm = this.formBuilder.nonNullable.group({
     username: ['', [
-      Validators.minLength(User.MIN_USERNAME_LENGTH),
-      Validators.maxLength(User.MAX_USERNAME_LENGTH),
+      Validators.minLength(USERNAME_MIN_LENGTH),
+      Validators.maxLength(USERNAME_MAX_LENGTH),
       Validators.required
     ]],
     email: ['', [Validators.email, Validators.required]],
@@ -40,8 +42,6 @@ export class SignUpPage implements OnInit {
     private router: Router,
     private alertsService: AlertsService
   ) { }
-
-  ngOnInit() {}
 
   private async signUp() {
     const { email, password, username } = this.signUpForm.value

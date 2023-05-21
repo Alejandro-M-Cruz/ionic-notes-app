@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {User} from "../../../model/user.model";
+import {Component, Input} from '@angular/core';
+import {USER_PASSWORD_MAX_LENGTH, USER_PASSWORD_MIN_LENGTH} from "../../../model/user.model";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {IonicModule} from "@ionic/angular";
 
@@ -13,12 +13,8 @@ import {IonicModule} from "@ionic/angular";
   ],
   standalone: true
 })
-export class PasswordInputComponent  implements OnInit {
+export class PasswordInputComponent {
   @Input() control!: FormControl
-  readonly minLength = User.MIN_PASSWORD_LENGTH
-  readonly maxLength = User.MAX_PASSWORD_LENGTH
-  constructor() { }
-
-  ngOnInit() {}
-
+  readonly minLength = USER_PASSWORD_MIN_LENGTH
+  readonly maxLength = USER_PASSWORD_MAX_LENGTH
 }
