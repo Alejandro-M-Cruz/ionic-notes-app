@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'ionic-notes-app',
+  appName: 'Notes App',
   webDir: 'www',
   server: {
     androidScheme: 'https'
