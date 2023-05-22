@@ -14,4 +14,15 @@ import {IonicModule} from "@ionic/angular";
 })
 export class EmailInputComponent {
   @Input() control!: FormControl
+
+  get errorMessage() {
+    if (!this.control.errors)
+      return ''
+    switch (Object.keys(this.control.errors)[0]) {
+      case 'required':
+        return 'Email is required'
+      default:
+        return 'Invalid email'
+    }
+  }
 }

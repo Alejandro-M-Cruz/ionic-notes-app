@@ -4,6 +4,6 @@
   labelPlacement="floating"
   fill="outline"
   [helperText]="'Between ' + minLength + ' and ' + maxLength + ' characters'"
-  errorText="Invalid username"
+  [errorText]="errorMessage"
   [formControl]="control"
 ></ion-input>

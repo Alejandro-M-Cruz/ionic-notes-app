@@ -15,6 +15,24 @@ import {IonicModule} from "@ionic/angular";
 })
 export class PasswordInputComponent {
   @Input() control!: FormControl
+  @Input() isConfirmation: boolean = false
   readonly minLength = USER_PASSWORD_MIN_LENGTH
   readonly maxLength = USER_PASSWORD_MAX_LENGTH
+
+  get errorMessage() {
+    if (!this.control.errors)
+      return ''
+    switch (Object.keys(this.control.errors)[0]) {
+      case 'passwordsDoNotMatch':
+        return 'Passwords do not match'
+      case 'required':
+        return 'Password is required'
+      case 'minlength':
+        return 'Password is too short'
+      case 'maxlength':
+        return 'Password is too long'
+      default:
+        return 'Invalid password'
+    }
+  }
 }

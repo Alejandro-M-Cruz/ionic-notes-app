@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {FormBuilder, FormControl, ValidatorFn, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormControl, ValidatorFn, Validators} from "@angular/forms";
 import {
   USER_PASSWORD_MAX_LENGTH, USERNAME_MAX_LENGTH, USER_PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH
 } from "../../model/user.model";
@@ -14,9 +14,14 @@ import {UserService} from "../../services/user/user.service";
   styleUrls: ['./sign-up.page.scss'],
 })
 export class SignUpPage {
-  private passwordsMatch: ValidatorFn = (form: any) => {
+  private passwordsMatch: ValidatorFn = (form: AbstractControl) => {
     const { password, passwordConfirmation } = form.value
-    return password === passwordConfirmation ? null : { passwordsDoNotMatch: true }
+    if (password === passwordConfirmation) {
+      delete form.get('passwordConfirmation')?.errors?.['passwordsDoNotMatch']
+      return null
+    }
+    form.get('passwordConfirmation')?.setErrors({ passwordsDoNotMatch: true })
+    return { passwordsDoNotMatch: true }
   }
   private passwordValidators = [
     Validators.minLength(USER_PASSWORD_MIN_LENGTH),

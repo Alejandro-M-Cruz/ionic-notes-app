@@ -17,4 +17,19 @@ export class UsernameInputComponent {
   @Input() control!: FormControl
   readonly minLength = USERNAME_MIN_LENGTH
   readonly maxLength = USERNAME_MAX_LENGTH
+
+  get errorMessage() {
+    if (!this.control.errors)
+      return ''
+    switch (Object.keys(this.control.errors)[0]) {
+      case 'required':
+        return 'Username is required'
+      case 'minlength':
+        return 'Username is too short'
+      case 'maxlength':
+        return 'Username is too long'
+      default:
+        return 'Invalid username'
+    }
+  }
 }

@@ -10,13 +10,7 @@
           <app-username-input [control]="signUpForm.controls.username"></app-username-input>
           <app-email-input [control]="signUpForm.controls.email"></app-email-input>
           <app-password-input [control]="signUpForm.controls.password"></app-password-input>
-          <app-password-input [control]="signUpForm.controls.passwordConfirmation"></app-password-input>
-          <ion-label
-            class="ion-text-center ion-margin-bottom"
-            color="danger" *ngIf="signUpForm.errors?.['passwordsDoNotMatch']"
-          >
-            Passwords do not match
-          </ion-label>
+          <app-password-input [control]="signUpForm.controls.passwordConfirmation" [isConfirmation]="true"></app-password-input>
           <app-profile-photo-input [control]="signUpForm.controls.profilePhoto"></app-profile-photo-input>
         </ion-col>
       </ion-row>
