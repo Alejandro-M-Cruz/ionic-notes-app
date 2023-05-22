@@ -8,7 +8,7 @@ import {AccountDeletionService} from "../../services/user/account-deletion.servi
 import {NotesService} from "../../services/notes/notes.service";
 import {AlertsService} from "../../services/alerts/alerts.service";
 import {NotesFilteringOption} from "../../model/note.model";
-import {IonModal, ViewWillEnter, ViewWillLeave} from "@ionic/angular";
+import {IonModal, ViewDidEnter, ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
 
 @Component({
@@ -22,7 +22,7 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
   userNotesQuantity$?: Observable<number | undefined>
   userFavouriteNotesQuantity$?: Observable<number | undefined>
   @ViewChild('usernameEditor') usernameEditorModal!: IonModal
-  usernameFormControl = new FormControl('', {
+  usernameFormControl = new FormControl(this.user$.value?.username ?? '', {
     nonNullable: true,
     validators: [
       Validators.minLength(USERNAME_MIN_LENGTH),
@@ -120,6 +120,10 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
       this.profilePhotoRemovalConfirmationMessage,
       this.onProfilePhotoRemovalConfirmationClosed.bind(this)
     )
+  }
+
+  onUsernameEditorOpened() {
+    this.usernameFormControl.setValue(this.user$.value?.username ?? '')
   }
 
   async onCancelUsernameEditionButtonClicked() {

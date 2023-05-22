@@ -46,7 +46,12 @@
               >
                 Remove profile photo
               </ion-button>
-              <ion-button id="open-username-editor" class="ion-margin-vertical" color="secondary">
+              <ion-button
+                id="open-username-editor"
+                class="ion-margin-vertical"
+                color="secondary"
+                (click)="onUsernameEditorOpened()"
+              >
                 Edit username
               </ion-button>
               <ion-button class="ion-margin-vertical"  (click)="onSignOutButtonClicked()" color="tertiary">
