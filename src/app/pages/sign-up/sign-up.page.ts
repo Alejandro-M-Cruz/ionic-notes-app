@@ -16,11 +16,17 @@ import {UserService} from "../../services/user/user.service";
 export class SignUpPage {
   private passwordsMatch: ValidatorFn = (form: AbstractControl) => {
     const { password, passwordConfirmation } = form.value
+    const passwordConfirmationControl = form.get('passwordConfirmation')!
     if (password === passwordConfirmation) {
-      delete form.get('passwordConfirmation')?.errors?.['passwordsDoNotMatch']
+      let errors: any = {}
+      for (let error in passwordConfirmationControl.errors) {
+        if (error !== 'passwordsDoNotMatch')
+          errors[error] = passwordConfirmationControl.errors[error]
+      }
+      passwordConfirmationControl.setErrors(Object.keys(errors).length ? errors : null)
       return null
     }
-    form.get('passwordConfirmation')?.setErrors({ passwordsDoNotMatch: true })
+    passwordConfirmationControl.setErrors({ passwordsDoNotMatch: true })
     return { passwordsDoNotMatch: true }
   }
   private passwordValidators = [
