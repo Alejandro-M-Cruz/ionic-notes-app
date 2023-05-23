@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
 import {UserService} from "../../services/user/user.service";
 import {NotesService} from "../../services/notes/notes.service";
@@ -58,9 +58,11 @@ export class NotesPage implements OnInit, OnDestroy {
   async onNotesDeletionConfirmationClosed(shouldDeleteNotes: boolean) {
     try {
       if (shouldDeleteNotes) {
-        this.displayOption === NotesFilteringOption.FAVOURITES ?
-          await this.notesService.deleteUserFavouriteNotes() :
-          await this.notesService.deleteUserNotesExceptFavourites()
+        await this.notesService.deleteUserNotes(
+          this.displayOption === NotesFilteringOption.FAVOURITES ?
+            NotesFilteringOption.FAVOURITES :
+            NotesFilteringOption.EXCEPT_FAVOURITES
+        )
       }
     } catch (e: any) {
       await this.alertsService.showErrorAlert(e)

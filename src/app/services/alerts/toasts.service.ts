@@ -5,38 +5,47 @@ import {ToastController} from "@ionic/angular";
   providedIn: 'root'
 })
 export class ToastsService {
+  private toastClosingButton: any = {
+    side: 'end',
+    icon: 'close-outline',
+    role: 'cancel'
+  }
 
   constructor(private toastController: ToastController) { }
 
-  async showSuccessToast(message: string, duration: number = 3000) {
-    const toast = await this.toastController.create({
-      message,
-      duration,
+  async showConnectionRestoredToast() {
+    const connectionRestoredToast = await this.toastController.create({
+      message: 'Connection restored',
+      duration: 3000,
       color: 'success',
       position: 'top',
       icon: 'wifi-outline',
-      buttons: [{
-        side: 'end',
-        icon: 'close-outline',
-        role: 'cancel'
-      }]
+      buttons: [this.toastClosingButton]
     })
-    await toast.present()
+    await connectionRestoredToast.present()
   }
 
-  async showErrorToast(message: string, duration: number = 3000) {
-    const toast = await this.toastController.create({
-      message,
-      duration,
+  async showConnectionLostToast() {
+    const connectionLostToast = await this.toastController.create({
+      message: 'Connection lost',
+      duration: 3000,
       color: 'danger',
       position: 'top',
       icon: 'cloud-offline-outline',
-      buttons: [{
-        side: 'end',
-        icon: 'close-outline',
-        role: 'cancel'
-      }]
+      buttons: [this.toastClosingButton]
     })
-    await toast.present()
+    await connectionLostToast.present()
+  }
+
+  async showAccountDeletedToast() {
+    const accountDeletedToast = await this.toastController.create({
+      message: 'Your account has been deleted',
+      duration: 5000,
+      color: 'warning',
+      position: 'bottom',
+      icon: 'person-remove-outline',
+      buttons: [this.toastClosingButton]
+    })
+    await accountDeletedToast.present()
   }
 }

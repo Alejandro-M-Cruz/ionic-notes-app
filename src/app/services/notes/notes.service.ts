@@ -1,6 +1,14 @@
 import {inject, Injectable} from '@angular/core';
 import {
-  addDoc, collection, collectionData, deleteDoc, doc, Firestore, query, updateDoc, where
+  addDoc,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  Firestore,
+  query,
+  updateDoc,
+  where
 } from "@angular/fire/firestore";
 import {BehaviorSubject, first, firstValueFrom, map, Observable, Subscription} from "rxjs";
 import {Note, NotesFilteringOption, NotesSortingMethod} from "../../model/note.model";
@@ -107,22 +115,13 @@ export class NotesService {
     this.storeFavouriteNotesLocally()
   }
 
-  async deleteUserNotesExceptFavourites() {
-    const userNotesExceptFavourites = await firstValueFrom(
-      this.getUserNotes$(NotesFilteringOption.EXCEPT_FAVOURITES)
-    )
+  async deleteUserNotes(filteringOption?: NotesFilteringOption) {
+    const userNotesExceptFavourites = await firstValueFrom(this.getUserNotes$(filteringOption))
     for (const note of userNotesExceptFavourites!)
       await this.deleteNote(note.id!)
-    this.storeFavouriteNotesLocally()
-  }
-
-  async deleteUserFavouriteNotes() {
-    const userFavouriteNotes = await firstValueFrom(
-      this.getUserNotes$(NotesFilteringOption.FAVOURITES)
-    )
-    for (const note of userFavouriteNotes!)
-      await this.deleteNote(note.id!)
-    this.storeFavouriteNotesLocally()
+    filteringOption === NotesFilteringOption.ALL ?
+      this.favouriteNotesService?.deleteAllStoredNotes() :
+      this.storeFavouriteNotesLocally()
   }
 
   async updateNote(noteId: string, note: Note) {

@@ -14,7 +14,7 @@ export class AccountDeletionService {
   ) { }
 
   async deleteUserAccount() {
-    await this.notesService.deleteUserNotesExceptFavourites()
+    await this.notesService.deleteUserNotes()
     await this.userService.removeProfilePhoto()
     await deleteUser(this.auth.currentUser!)
   }

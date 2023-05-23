@@ -42,6 +42,8 @@ export class UserService {
   }
 
   async removeProfilePhoto() {
+    if (!this.auth.currentUser?.photoURL)
+      return
     await updateProfile(this.auth.currentUser!, { photoURL: '' })
     await this.profilePhotoService.deleteUserProfilePhoto(this.auth.currentUser!.uid)
   }

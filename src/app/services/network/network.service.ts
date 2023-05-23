@@ -55,12 +55,12 @@ export class NetworkService {
   private async onConnectionLost() {
     this.routeWhereConnectionWasLost = this.location.path()
     await this.router.navigate(['/no-connection'])
-    await this.toastsService.showErrorToast('Connection lost')
+    await this.toastsService.showConnectionLostToast()
   }
 
   private async onConnectionRestored() {
     await this.router.navigate([this.routeWhereConnectionWasLost ?? '/notes'])
-    await this.toastsService.showSuccessToast('Connection restored')
+    await this.toastsService.showConnectionRestoredToast()
   }
 
   removeNetworkChangesListener() {

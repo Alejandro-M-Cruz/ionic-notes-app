@@ -10,6 +10,7 @@ import {AlertsService} from "../../services/alerts/alerts.service";
 import {NotesFilteringOption} from "../../model/note.model";
 import {IonModal, ViewDidEnter, ViewWillEnter, ViewWillLeave} from "@ionic/angular";
 import {FormControl, Validators} from "@angular/forms";
+import {ToastsService} from "../../services/alerts/toasts.service";
 
 @Component({
   selector: 'app-profile',
@@ -42,6 +43,7 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
     private authService: AuthService,
     private notesService: NotesService,
     private alertsService: AlertsService,
+    private toastsService: ToastsService,
     private accountDeletionService: AccountDeletionService,
     private router: Router
   ) { }
@@ -86,13 +88,17 @@ export class ProfilePage implements ViewWillEnter, ViewWillLeave {
 
   private async onAccountDeletionConfirmationClosed(shouldDeleteAccount: boolean) {
     try {
-      if (shouldDeleteAccount) {
-        await this.accountDeletionService.deleteUserAccount()
-        await this.router.navigate(['/home'])
-      }
+      if (shouldDeleteAccount)
+        await this.deleteAccount()
     } catch (e: any) {
       await this.alertsService.showErrorAlert(e, this.onAccountDeletionErrorAlertClosed.bind(this))
     }
+  }
+
+  private async deleteAccount() {
+    await this.accountDeletionService.deleteUserAccount()
+    await this.router.navigate(['/home'])
+    await this.toastsService.showAccountDeletedToast()
   }
 
   async onDeleteAccountButtonClicked() {
